@@ -30,6 +30,7 @@ export async function GET() {
         documents: sql<number>`(select count(*) from ${documents})`,
         chats: sql<number>`(select count(*) from ${chats})`,
         tabularReviews: sql<number>`(select count(*) from ${tabularReviews})`,
+        aiCreditsUsed: sql<number>`coalesce(sum(${userProfiles.message_credits_used}), 0)`,
       })
       .from(users)
       .leftJoin(userProfiles, eq(userProfiles.user_id, users.id));
@@ -46,11 +47,14 @@ export async function GET() {
       .select({
         paidSubscriptions: sql<number>`count(*) filter (where ${subscriptions.status} = 'paid')`,
         pendingSubscriptions: sql<number>`count(*) filter (where ${subscriptions.status} = 'pending')`,
+        activeSubscriptions: sql<number>`count(*) filter (where ${subscriptions.status} in ('paid', 'active'))`,
         totalRevenueCents: sql<number>`coalesce(sum(${subscriptions.amount_cents}) filter (where ${subscriptions.status} = 'paid'), 0)`,
+        revenue30dCents: sql<number>`coalesce(sum(${subscriptions.amount_cents}) filter (where ${subscriptions.status} = 'paid' and ${subscriptions.created_at} >= now() - interval '30 days'), 0)`,
+        payingUsers: sql<number>`count(distinct ${subscriptions.user_id}) filter (where ${subscriptions.status} = 'paid')`,
       })
       .from(subscriptions);
 
-    const recentUsers = await db
+    const recentUsersQuery = db
       .select({
         id: users.id,
         email: users.email,
@@ -64,10 +68,15 @@ export async function GET() {
       })
       .from(users)
       .leftJoin(userProfiles, eq(userProfiles.user_id, users.id))
+      .$dynamic();
+    const recentUsers = await (principal.role === "super_admin"
+      ? recentUsersQuery
+      : recentUsersQuery.where(sql`coalesce(${userProfiles.role}, 'user') <> 'super_admin'`)
+    )
       .orderBy(desc(users.created_at))
-      .limit(12);
+      .limit(20);
 
-    const admins = await db
+    const adminQuery = db
       .select({
         id: users.id,
         email: users.email,
@@ -78,8 +87,11 @@ export async function GET() {
       })
       .from(userProfiles)
       .innerJoin(users, eq(users.id, userProfiles.user_id))
-      .where(sql`${userProfiles.role} in ('admin', 'super_admin')`)
-      .orderBy(desc(userProfiles.updated_at));
+      .$dynamic();
+    const admins = await (principal.role === "super_admin"
+      ? adminQuery.where(sql`${userProfiles.role} in ('admin', 'super_admin')`)
+      : adminQuery.where(sql`${userProfiles.role} = 'admin'`)
+    ).orderBy(desc(userProfiles.updated_at));
 
     const auditLogs = await db
       .select({
@@ -106,6 +118,7 @@ export async function GET() {
         documents: numberValue(counts?.documents),
         chats: numberValue(counts?.chats),
         tabularReviews: numberValue(counts?.tabularReviews),
+        aiCreditsUsed: numberValue(counts?.aiCreditsUsed),
       },
       tiers: tierRows.map((row) => ({
         tier: row.tier || "Free",
@@ -114,7 +127,14 @@ export async function GET() {
       financials: {
         paidSubscriptions: numberValue(financials?.paidSubscriptions),
         pendingSubscriptions: numberValue(financials?.pendingSubscriptions),
+        activeSubscriptions: numberValue(financials?.activeSubscriptions),
         totalRevenueCents: numberValue(financials?.totalRevenueCents),
+        revenue30dCents: numberValue(financials?.revenue30dCents),
+        payingUsers: numberValue(financials?.payingUsers),
+        averageRevenuePerPaidUserCents:
+          numberValue(financials?.payingUsers) > 0
+            ? Math.round(numberValue(financials?.totalRevenueCents) / numberValue(financials?.payingUsers))
+            : 0,
         currency: "SAR",
       },
       recentUsers,

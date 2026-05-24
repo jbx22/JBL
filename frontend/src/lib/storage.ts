@@ -19,11 +19,13 @@ import { getSignedUrl as awsGetSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 let cachedClient: S3Client | undefined;
 
+const R2_ENDPOINT = process.env.R2_ENDPOINT_URL || process.env.R2_ENDPOINT;
+
 function getClient(): S3Client {
   if (!cachedClient) {
     cachedClient = new S3Client({
       region: "auto",
-      endpoint: process.env.R2_ENDPOINT_URL!,
+      endpoint: R2_ENDPOINT!,
       forcePathStyle: true,
       credentials: {
         accessKeyId: process.env.R2_ACCESS_KEY_ID!,
@@ -37,7 +39,7 @@ function getClient(): S3Client {
 const BUCKET = process.env.R2_BUCKET_NAME ?? "mike";
 
 export const storageEnabled = Boolean(
-  process.env.R2_ENDPOINT_URL &&
+  R2_ENDPOINT &&
   process.env.R2_ACCESS_KEY_ID &&
   process.env.R2_SECRET_ACCESS_KEY,
 );

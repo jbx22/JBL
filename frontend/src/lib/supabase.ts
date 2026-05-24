@@ -16,6 +16,22 @@ import type { PgTable } from "drizzle-orm/pg-core";
 
 export type SupabaseClient = ReturnType<typeof createServerSupabase>;
 
+const tableNameMap: Record<string, keyof typeof schema> = {
+  admin_audit_logs: "adminAuditLogs",
+  chat_messages: "chatMessages",
+  document_edits: "documentEdits",
+  document_versions: "documentVersions",
+  hidden_workflows: "hiddenWorkflows",
+  project_subfolders: "projectSubfolders",
+  tabular_cells: "tabularCells",
+  tabular_review_chat_messages: "tabularReviewChatMessages",
+  tabular_review_chats: "tabularReviewChats",
+  tabular_reviews: "tabularReviews",
+  user_api_keys: "userApiKeys",
+  user_profiles: "userProfiles",
+  workflow_shares: "workflowShares",
+};
+
 // --- Adapter ---------------------------------------------------------------
 
 class LazyQuery<T extends PgTable = PgTable> {
@@ -33,7 +49,7 @@ class LazyQuery<T extends PgTable = PgTable> {
   // -- chainable setters ----------------------------------------------------
 
   from(table: string) {
-    const t = (schema as Record<string, unknown>)[table];
+    const t = (schema as Record<string, unknown>)[tableNameMap[table] ?? table];
     if (!t) throw new Error(`Table "${table}" not in Drizzle schema`);
     this._table = t as unknown as T;
     return this as unknown as LazyQuery<T>;

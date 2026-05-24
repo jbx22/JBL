@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/app/api/auth-helpers";
 import { db } from "@/db";
 import { chats, chatMessages } from "@/db/schema";
+import { renameChat } from "@/lib/chatRoute";
+import { errorToResponse } from "@/lib/http-error";
 import { eq, and } from "drizzle-orm";
+
+export const runtime = "nodejs";
 
 // GET /api/chat/[chatId] — get specific chat
 export async function GET(
@@ -37,7 +41,9 @@ export async function GET(
 
     return NextResponse.json({ chat: chat[0], messages: msgs });
   } catch (err: any) {
-    if (err instanceof Response) throw err;
+    const response = errorToResponse(err);
+    if (response) return response;
+    console.error("GET /api/chat/[chatId] error:", err);
     return NextResponse.json({ detail: "Internal server error" }, { status: 500 });
   }
 }
@@ -56,7 +62,29 @@ export async function DELETE(
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
-    if (err instanceof Response) throw err;
+    const response = errorToResponse(err);
+    if (response) return response;
+    console.error("DELETE /api/chat/[chatId] error:", err);
+    return NextResponse.json({ detail: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ chatId: string }> }
+) {
+  try {
+    const { chatId } = await params;
+    const body = await req.json();
+    const title = String(body.title ?? "").trim();
+    if (!title) {
+      return NextResponse.json({ detail: "title is required" }, { status: 400 });
+    }
+    return renameChat(chatId, title);
+  } catch (err: any) {
+    const response = errorToResponse(err);
+    if (response) return response;
+    console.error("PATCH /api/chat/[chatId] error:", err);
     return NextResponse.json({ detail: "Internal server error" }, { status: 500 });
   }
 }

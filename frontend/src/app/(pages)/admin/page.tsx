@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/AuthContext";
 
 type Role = "user" | "admin" | "super_admin";
 type AccountStatus = "active" | "suspended" | "deleted";
@@ -29,14 +28,19 @@ type AdminOverview = {
         | "projects"
         | "documents"
         | "chats"
-        | "tabularReviews",
+        | "tabularReviews"
+        | "aiCreditsUsed",
         number
     >;
     tiers: { tier: string; count: number }[];
     financials: {
         paidSubscriptions: number;
         pendingSubscriptions: number;
+        activeSubscriptions: number;
         totalRevenueCents: number;
+        revenue30dCents: number;
+        payingUsers: number;
+        averageRevenuePerPaidUserCents: number;
         currency: string;
     };
     recentUsers: {
@@ -139,7 +143,6 @@ export default function AdminPage() {
 
     const isSuperAdmin = overview?.principal.role === "super_admin";
     const isSuperAdminPage = pathname === "/super-admin";
-    const { user } = useAuth();
 
     const loadOverview = async () => {
         setError(null);
@@ -265,7 +268,7 @@ export default function AdminPage() {
                     </div>
                     <h1 className="text-2xl font-semibold text-gray-950">Admin access required</h1>
                     <p className="mt-3 text-sm leading-6 text-gray-600">
-                        You are signed in as {user?.email || "a non-admin account"}. This account is not an admin or super admin, so the admin pages cannot open with it.
+                        The current account is not an admin or super admin, so the admin pages cannot open with it.
                     </p>
                     <div className="mt-5 rounded-md bg-gray-50 p-3 text-sm text-gray-700">
                         Use the super admin account:
@@ -305,8 +308,8 @@ export default function AdminPage() {
                                 : "Operations, users, subscriptions, and admin dashboard"}
                         </h1>
                     </div>
-                    <div className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
-                        {overview.principal.email} · {overview.principal.role.replace("_", " ")}
+                    <div className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700">
+                        {overview.principal.role.replace("_", " ")}
                     </div>
                 </div>
 
@@ -336,6 +339,7 @@ export default function AdminPage() {
                     <StatCard label="Admins" value={overview.counts.admins} icon={ShieldCheck} />
                     <StatCard label="AI chats" value={overview.counts.chats} icon={Activity} />
                     <StatCard label="Tabular reviews" value={overview.counts.tabularReviews} icon={FileText} />
+                    <StatCard label="AI credits used" value={overview.counts.aiCreditsUsed} icon={Activity} />
                     <StatCard label="Paid revenue" value={totalRevenue} icon={BadgeDollarSign} />
                 </div>
 
@@ -391,8 +395,8 @@ export default function AdminPage() {
                             {overview.admins.map((admin) => (
                                 <div key={admin.id} className="grid gap-3 p-4 md:grid-cols-[1fr_140px_150px_auto_auto] md:items-center">
                                     <div className="min-w-0">
-                                        <div className="truncate font-medium text-gray-950">{admin.email}</div>
-                                        <div className="text-sm text-gray-500">{admin.displayName || "No display name"}</div>
+                                        <div className="font-medium text-gray-950">{admin.displayName || "Unnamed admin"}</div>
+                                        <div className="break-all text-sm text-gray-500">{admin.email}</div>
                                     </div>
                                     <select
                                         disabled={!isSuperAdmin || admin.id === overview.principal.userId || saving}
@@ -458,6 +462,22 @@ export default function AdminPage() {
                                 <div className="text-sm text-gray-500">Pending payments</div>
                                 <div className="mt-1 text-xl font-semibold">{overview.financials.pendingSubscriptions}</div>
                             </div>
+                            <div className="rounded-md bg-gray-50 p-3">
+                                <div className="text-sm text-gray-500">30-day revenue</div>
+                                <div className="mt-1 text-xl font-semibold">{money.format(overview.financials.revenue30dCents / 100)}</div>
+                            </div>
+                            <div className="rounded-md bg-gray-50 p-3">
+                                <div className="text-sm text-gray-500">Avg paid user</div>
+                                <div className="mt-1 text-xl font-semibold">{money.format(overview.financials.averageRevenuePerPaidUserCents / 100)}</div>
+                            </div>
+                            <div className="rounded-md bg-gray-50 p-3">
+                                <div className="text-sm text-gray-500">Paying users</div>
+                                <div className="mt-1 text-xl font-semibold">{overview.financials.payingUsers}</div>
+                            </div>
+                            <div className="rounded-md bg-gray-50 p-3">
+                                <div className="text-sm text-gray-500">Active subscriptions</div>
+                                <div className="mt-1 text-xl font-semibold">{overview.financials.activeSubscriptions}</div>
+                            </div>
                         </div>
                         <div className="space-y-2 px-4 pb-4">
                             {overview.tiers.map((tier) => (
@@ -477,11 +497,12 @@ export default function AdminPage() {
                         </div>
                         <div className="divide-y divide-gray-100">
                             {overview.recentUsers.map((user) => (
-                                <div key={user.id} className="grid gap-2 p-4 text-sm md:grid-cols-[1fr_130px_140px_130px] md:items-center">
+                                <div key={user.id} className="grid gap-3 p-4 text-sm md:grid-cols-[minmax(260px,1fr)_130px_140px_130px] md:items-center">
                                     <div className="min-w-0">
-                                        <div className="truncate font-medium text-gray-950">{user.email}</div>
-                                        <div className="truncate text-gray-500">
-                                            {user.organisation || user.displayName || "No organisation"} · {user.messageCreditsUsed ?? 0} credits used
+                                        <div className="font-medium text-gray-950">{user.displayName || user.organisation || "Unnamed user"}</div>
+                                        <div className="break-all text-gray-500">{user.email}</div>
+                                        <div className="text-gray-500">
+                                            {user.organisation || "No organisation"} | {user.messageCreditsUsed ?? 0} credits used
                                         </div>
                                     </div>
                                     <select
@@ -540,7 +561,7 @@ export default function AdminPage() {
                                             </span>
                                         </div>
                                         <div className="mt-1 text-gray-500">
-                                            {log.actorEmail || "System"} · {log.entityType}
+                                            {log.actorEmail || "System"} | {log.entityType}
                                         </div>
                                     </div>
                                 ))
@@ -552,3 +573,4 @@ export default function AdminPage() {
         </div>
     );
 }
+
