@@ -50,10 +50,16 @@ const UserProfileContext = createContext<UserProfileContextType | undefined>(
     undefined,
 );
 
-const API_KEY_PROVIDERS: ApiKeyProvider[] = ["claude", "gemini", "openai"];
+const API_KEY_PROVIDERS: ApiKeyProvider[] = [
+    "deepseek",
+    "claude",
+    "gemini",
+    "openai",
+];
 
 function emptyApiKeys(): ApiKeyState {
     return {
+        deepseek: { configured: false, source: null },
         claude: { configured: false, source: null },
         gemini: { configured: false, source: null },
         openai: { configured: false, source: null },
@@ -100,7 +106,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
                 creditsResetDate: futureResetDate.toISOString(),
                 creditsRemaining: 999999, // temporarily unlimited
                 tier: "Free",
-                tabularModel: "gemini-3-flash-preview",
+                tabularModel: "deepseek-v4-flash",
                 apiKeys: emptyApiKeys(),
             });
         } finally {

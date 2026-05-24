@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
       creditsResetDate: row.credits_reset_date,
       creditsRemaining: Math.max(MONTHLY_CREDIT_LIMIT - creditsUsed, 0),
       tier: row.tier || "Free",
-      tabularModel: row.tabular_model || "openai/gpt-4.1-nano",
+      tabularModel: row.tabular_model || "deepseek-v4-flash",
     });
   } catch (err: any) {
     if (err instanceof Response) throw err;

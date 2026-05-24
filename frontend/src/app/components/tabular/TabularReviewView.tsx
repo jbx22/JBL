@@ -93,7 +93,7 @@ export function TRView({ reviewId, projectId }: Props) {
     const router = useRouter();
     const { profile } = useUserProfile();
     const apiKeys = profile?.apiKeys;
-    const tabularModel = profile?.tabularModel ?? "gemini-3-flash-preview";
+    const tabularModel = profile?.tabularModel ?? "deepseek-v4-flash";
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -290,7 +290,7 @@ export function TRView({ reviewId, projectId }: Props) {
                 const payload = await response.json().catch(() => null);
                 const provider =
                     payload &&
-                    ["claude", "gemini", "openai"].includes(payload.provider)
+                    ["deepseek", "claude", "gemini", "openai"].includes(payload.provider)
                         ? (payload.provider as ModelProvider)
                         : getModelProvider(tabularModel);
                 if (payload?.code === "missing_api_key" && provider) {

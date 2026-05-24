@@ -3,7 +3,7 @@ import { createServerSupabase } from "./supabase";
 import type { UserApiKeys } from "./llm";
 
 type Db = ReturnType<typeof createServerSupabase>;
-export type ApiKeyProvider = "claude" | "gemini" | "openai";
+export type ApiKeyProvider = "claude" | "gemini" | "openai" | "deepseek";
 export type ApiKeySource = "user" | "env" | null;
 export type ApiKeyStatus = Record<ApiKeyProvider, boolean> & {
     sources: Record<ApiKeyProvider, ApiKeySource>;
@@ -16,9 +16,12 @@ type EncryptedKeyRow = {
     auth_tag: string;
 };
 
-const PROVIDERS: ApiKeyProvider[] = ["claude", "gemini", "openai"];
+const PROVIDERS: ApiKeyProvider[] = ["deepseek", "claude", "gemini", "openai"];
 
 function envApiKey(provider: ApiKeyProvider): string | null {
+    if (provider === "deepseek") {
+        return process.env.DEEPSEEK_API_KEY?.trim() || null;
+    }
     if (provider === "claude") {
         return (
             process.env.ANTHROPIC_API_KEY?.trim() ||
@@ -93,10 +96,12 @@ export async function getUserApiKeyStatus(
     db: Db = createServerSupabase(),
 ): Promise<ApiKeyStatus> {
     const status: ApiKeyStatus = {
+        deepseek: false,
         claude: false,
         gemini: false,
         openai: false,
         sources: {
+            deepseek: null,
             claude: null,
             gemini: null,
             openai: null,
@@ -132,6 +137,7 @@ export async function getUserApiKeys(
     db: Db = createServerSupabase(),
 ): Promise<UserApiKeys> {
     const apiKeys: UserApiKeys = {
+        deepseek: envApiKey("deepseek"),
         claude: envApiKey("claude"),
         gemini: envApiKey("gemini"),
         openai: envApiKey("openai"),
