@@ -45,7 +45,7 @@ type RosterRow = {
 };
 
 /**
- * Roster of every Mike member with access to the project, with controls to
+ * Roster of every JBL BIZ LAW member with access to the project, with controls to
  * add/remove members. Mirrors AddDocumentsModal's frame.
  */
 export function PeopleModal({

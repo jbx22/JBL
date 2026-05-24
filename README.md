@@ -1,124 +1,64 @@
-# Mike
+# JBL BIZ LAW | جبل بيز لو
 
-Mike is a legal document assistant with a Next.js frontend, an Express backend, Supabase Auth/Postgres, and Cloudflare R2-compatible object storage.
+AI-powered legal document analysis, contract review, and business intelligence platform for Saudi professionals.
 
-Website: [mikeoss.com](https://mikeoss.com)
+## Architecture
+
+- **Framework**: Next.js 16 (App Router, Turbopack)
+- **Database**: Neon Postgres (free tier) + Drizzle ORM
+- **Auth**: Auth.js v5 (NextAuth) with credentials provider
+- **Storage**: Cloudflare R2 (S3-compatible)
+- **i18n**: next-intl with full Arabic/English bilingual support
+- **UI**: TailwindCSS, shadcn/ui, Framer Motion, Radix UI
+- **Deployment**: Vercel free tier compatible
 
 ## Contents
 
-- `frontend/` - Next.js application
-- `backend/` - Express API, Supabase access, document processing, and database schema
-- `backend/schema.sql` - Supabase schema for fresh databases
-- `backend/migrations/` - incremental database updates for existing deployments
+- `frontend/` - Next.js application (unified frontend + API routes)
+- `backend/` - Legacy Express backend (reference only — all routes migrated to `frontend/src/app/api/`)
+- `backend/schema.sql` - Original Supabase schema (reference — Drizzle schema at `frontend/src/db/schema.ts`)
 
 ## Prerequisites
 
 - Node.js 20 or newer
 - npm
-- git
-- A Supabase project
-- A Cloudflare R2 bucket, MinIO bucket, or another S3-compatible bucket
-- At least one supported model provider API key: Anthropic, Google Gemini, or OpenAI
-- LibreOffice installed locally if you need DOC/DOCX to PDF conversion
+- A Neon Postgres database (free tier: https://neon.tech)
+- A Cloudflare R2 bucket (or any S3-compatible bucket)
+- At least one AI provider API key: Anthropic, Google Gemini, or OpenAI
+- LibreOffice installed locally (optional, for DOC/DOCX to PDF conversion)
+
+## Quick Start
+
+```bash
+cd frontend
+npm install
+cp .env.example .env.local
+# Edit .env.local with your DATABASE_URL, AUTH_SECRET, R2 credentials
+npm run dev
+```
 
 ## Database Setup
 
-For a new Supabase database, open the Supabase SQL editor and run:
-
-```sql
--- copy and run the contents of:
--- backend/schema.sql
-```
-
-The schema file is based on `supabase-migration.sql` and folds in the later files in `backend/migrations/`.
-
-For an existing database, do not run the full schema file over production data. Apply the incremental files in `backend/migrations/` instead.
-
-## Environment
-
-Create local env files:
-
+1. Create a Neon Postgres database
+2. Copy the connection string to `DATABASE_URL` in `.env.local`
+3. Run migrations:
 ```bash
-touch backend/.env
-touch frontend/.env.local
+cd frontend
+npx drizzle-kit push
 ```
 
-Create `backend/.env`:
+## Environment Variables
 
-```bash
-PORT=3001
-FRONTEND_URL=http://localhost:3000
-DOWNLOAD_SIGNING_SECRET=replace-with-a-random-32-byte-hex-string
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SECRET_KEY=your-supabase-service-role-key
+See `frontend/.env.example` for the full list:
+- `DATABASE_URL` — Neon Postgres connection string
+- `AUTH_SECRET` — Auth.js secret (generate with `openssl rand -base64 32`)
+- `AUTH_URL` — Your app URL (e.g. `http://localhost:3000`)
+- `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` — Cloudflare R2 credentials
+- `R2_BUCKET_NAME` — R2 bucket name
+- `R2_ENDPOINT` — R2 endpoint URL
+- `R2_PUBLIC_URL` — Public URL for R2 files
+- `OPENAI_API_KEY` / `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` — AI provider keys
 
-R2_ENDPOINT_URL=https://your-account-id.r2.cloudflarestorage.com
-R2_ACCESS_KEY_ID=your-r2-access-key
-R2_SECRET_ACCESS_KEY=your-r2-secret-key
-R2_BUCKET_NAME=mike
+## License
 
-GEMINI_API_KEY=your-gemini-key
-ANTHROPIC_API_KEY=your-anthropic-key
-OPENAI_API_KEY=your-openai-key
-RESEND_API_KEY=your-resend-key
-USER_API_KEYS_ENCRYPTION_SECRET=your-long-random-secret
-```
-
-Create `frontend/.env.local`:
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-supabase-anon-key
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
-```
-
-Supabase values come from the project dashboard. Use the project URL for `SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_URL`, the service role key for the backend `SUPABASE_SECRET_KEY`, and the anon/public key for `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`. If your Supabase project shows multiple key formats, use the legacy JWT-style anon and service role keys expected by the Supabase client libraries.
-
-Provider keys are only needed for the models and email features you plan to use. Model provider keys can be configured in `backend/.env` for the whole instance, or per user in **Account > Models & API Keys**. If a provider key is present in `backend/.env`, that provider is available by default and the matching browser API key field is read-only.
-
-## Install
-
-Install each app package:
-
-```bash
-npm install --prefix backend
-npm install --prefix frontend
-```
-
-## Run Locally
-
-Start the backend:
-
-```bash
-npm run dev --prefix backend
-```
-
-Start the main app:
-
-```bash
-npm run dev --prefix frontend
-```
-
-Open `http://localhost:3000`.
-
-## First Run
-
-1. Sign up in the app.
-2. If you did not set provider keys in `backend/.env`, open **Account > Models & API Keys** and add an Anthropic, Gemini, or OpenAI API key.
-3. Create or open a project and start chatting with documents.
-
-## Troubleshooting
-
-**Sign-up confirmation email never arrives.** Confirmation emails are sent by Supabase Auth, not by Mike. For local development, the simplest fix is to disable email confirmation in **Supabase > Authentication > Providers > Email**. For production, configure custom SMTP in Supabase; the built-in mailer is heavily rate-limited and may be restricted on newer projects.
-
-**The model picker shows a missing-key warning.** Add a key for that provider in **Account > Models & API Keys**, or configure the provider key in `backend/.env` and restart the backend.
-
-**DOC or DOCX conversion fails.** Install LibreOffice locally and restart the backend so document conversion commands are available on the process path.
-
-## Useful Checks
-
-```bash
-npm run build --prefix backend
-npm run build --prefix frontend
-npm run lint --prefix frontend
-```
+AGPL-3.0 — Based on Mike by Will Chen (https://github.com/willchen96/mike)

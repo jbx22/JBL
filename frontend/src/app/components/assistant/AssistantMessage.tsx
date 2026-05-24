@@ -7,7 +7,7 @@ import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import { Copy, Check, ChevronDown, Download, Loader2 } from "lucide-react";
-import { MikeIcon } from "@/components/chat/mike-icon";
+import { BizLawIcon } from "@/components/chat/mike-icon";
 import { displayCitationQuote, formatCitationPage } from "../shared/types";
 import type {
     AssistantEvent,
@@ -16,7 +16,7 @@ import type {
 } from "../shared/types";
 import { EditCard, applyOptimisticResolution } from "./EditCard";
 import { PreResponseWrapper } from "../shared/PreResponseWrapper";
-import { supabase } from "@/lib/supabase";
+import { getSession } from "next-auth/react";
 
 function toolCallLabel(name: string): string {
     if (name === "generate_docx") return "Creating document...";
@@ -88,10 +88,8 @@ function BulkEditActions({
         setBusy(verb);
         setProgress({ done: 0, total: pending.length });
         try {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            const token = session?.access_token;
+            const session = await getSession();
+            const token = btoa(JSON.stringify({ userId: session?.user?.id, email: session?.user?.email }));
             const apiBase =
                 process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
 
@@ -342,11 +340,11 @@ function ResponseStatus({ status }: { status: StatusState }) {
 
     return (
         <div className="w-full h-9 flex items-center mb-2">
-            <MikeIcon
+            <BizLawIcon
                 spin={isActive}
                 done={showDone && doneVisible}
                 error={isError}
-                mike={!isError && !(showDone && doneVisible)}
+                jbl={!isError && !(showDone && doneVisible)}
                 size={22}
             />
         </div>
@@ -633,10 +631,8 @@ function DocDownloadBlock({
         if (busy || isReloading || !href) return;
         setBusy(true);
         try {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            const token = session?.access_token;
+            const session2 = await getSession();
+            const token = btoa(JSON.stringify({ userId: session2?.user?.id, email: session2?.user?.email }));
             const resp = await fetch(href, {
                 headers: token ? { Authorization: `Bearer ${token}` } : {},
             });
@@ -1009,7 +1005,7 @@ interface Props {
     events?: AssistantEvent[];
     isStreaming?: boolean;
     isError?: boolean;
-    /** Human-readable error text rendered alongside the red Mike icon. */
+    /** Human-readable error text rendered alongside the red JBL icon. */
     errorMessage?: string;
     annotations?: MikeCitationAnnotation[];
     onCitationClick?: (citation: MikeCitationAnnotation) => void;

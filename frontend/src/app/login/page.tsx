@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -26,18 +26,15 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
         setError(null);
-
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-
-            if (error) throw error;
-
-            router.push("/assistant");
-        } catch (error: any) {
-            setError(error.message || "An error occurred during login");
+            const result = await signIn("credentials", { email, password, redirect: false });
+            if (result?.error) {
+                setError("Invalid email or password");
+            } else {
+                router.push("/assistant");
+            }
+        } catch {
+            setError("An error occurred during login");
         } finally {
             setLoading(false);
         }
@@ -120,7 +117,7 @@ export default function LoginPage() {
                     </form>
                 </div>
                 <p className="text-center text-xs text-gray-500 leading-relaxed px-2">
-                    Mike hosted on MikeOSS.com is currently a demo service.
+                    JBL BIZ LAW hosted on jblbizlaw.com is currently a demo service.
                     Please do not upload, submit, or store sensitive,
                     confidential, privileged, client, or personally
                     identifiable documents.

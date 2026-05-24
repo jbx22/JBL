@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { MikeIcon } from "@/components/chat/mike-icon";
+import { BizLawIcon } from "@/components/chat/mike-icon";
 import { useFetchDocxBytes } from "@/app/hooks/useFetchDocxBytes";
-import { supabase } from "@/lib/supabase";
+import { getSession } from "next-auth/react";
 import {
     clearDocxQuoteHighlights,
     highlightDocxQuote,
@@ -144,10 +144,8 @@ async function tagWIdsOnRenderedDom(
     versionId: string | null | undefined,
 ): Promise<void> {
     try {
-        const {
-            data: { session },
-        } = await supabase.auth.getSession();
-        const token = session?.access_token;
+        const session = await getSession();
+        const token = btoa(JSON.stringify({ userId: session?.user?.id, email: session?.user?.email }));
         const apiBase =
             process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
         const qs = versionId
@@ -494,7 +492,7 @@ export function DocxView({
             >
                 {loading && !bytes && (
                     <div className="flex h-full items-center justify-center">
-                        <MikeIcon spin mike size={28} />
+                        <BizLawIcon spin jbl size={28} />
                     </div>
                 )}
                 {error && (

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#1a1a2e"/>
+  <path d="M64 448L256 96L448 448H64Z" fill="#16213e" stroke="#c9a84c" stroke-width="8"/>
+  <path d="M140 448L256 200L372 448H140Z" fill="#1a1a2e" stroke="#c9a84c" stroke-width="6"/>
+  <path d="M216 288L256 240L296 288H216Z" fill="#c9a84c"/>
+  <text x="256" y="490" text-anchor="middle" fill="#c9a84c" font-size="32" font-family="sans-serif" font-weight="bold">JBL BIZ LAW</text>
+</svg>

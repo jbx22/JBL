@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSession } from "next-auth/react";
 import type { MikeEditAnnotation } from "../shared/types";
 
 function normalizeText(s: string) {
@@ -240,10 +240,8 @@ export function EditCard({
             console.error("[EditCard] optimistic update threw", e);
         }
         try {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            const token = session?.access_token;
+            const session = await getSession();
+            const token = btoa(JSON.stringify({ userId: session?.user?.id, email: session?.user?.email }));
             const apiBase =
                 process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
             const resp = await fetch(

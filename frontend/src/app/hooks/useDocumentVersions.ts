@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSession } from "next-auth/react";
 
 export interface DocumentVersionRow {
     id: string;
@@ -52,10 +52,8 @@ export function useDocumentVersions(
 
         (async () => {
             try {
-                const {
-                    data: { session },
-                } = await supabase.auth.getSession();
-                const token = session?.access_token;
+                const session = await getSession();
+                const token = btoa(JSON.stringify({ userId: session?.user?.id, email: session?.user?.email }));
                 const apiBase =
                     process.env.NEXT_PUBLIC_API_BASE_URL ??
                     "http://localhost:3001";

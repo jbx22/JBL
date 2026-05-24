@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { SiteLogo } from "@/components/site-logo";
 import { CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { updateUserProfile } from "@/app/lib/mikeApi";
 
 export default function SignupPage() {
     const router = useRouter();
@@ -49,30 +47,22 @@ export default function SignupPage() {
         }
 
         try {
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password,
+            const res = await fetch("/api/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    name: name.trim() || undefined,
+                    organisation: organisation.trim() || undefined,
+                }),
             });
 
-            if (error) throw error;
-
-            if (data.session) {
-                const trimmedName = name.trim();
-                const trimmedOrg = organisation.trim();
-                if (trimmedName || trimmedOrg) {
-                    try {
-                        await updateUserProfile({
-                            ...(trimmedName && { displayName: trimmedName }),
-                            ...(trimmedOrg && { organisation: trimmedOrg }),
-                        });
-                    } catch (profileError) {
-                        console.error(
-                            "[signup] failed to persist profile fields",
-                            profileError,
-                        );
-                    }
-                }
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data?.detail || "An error occurred during signup");
             }
+
             setSuccess(true);
             setTimeout(() => {
                 router.push("/assistant");
@@ -255,7 +245,7 @@ export default function SignupPage() {
                     <div className="mt-4 text-center text-xs text-gray-500">
                         By signing up, you agree to our{" "}
                         <Link
-                            href="https://mikeoss.com/terms"
+                            href="https://jblbizlaw.com/terms"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
@@ -264,7 +254,7 @@ export default function SignupPage() {
                         </Link>{" "}
                         and{" "}
                         <Link
-                            href="https://mikeoss.com/privacy"
+                            href="https://jblbizlaw.com/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
@@ -274,7 +264,7 @@ export default function SignupPage() {
                     </div>
                 </div>
                 <p className="text-center text-xs text-gray-500 leading-relaxed px-2">
-                    Mike hosted on MikeOSS.com is currently a demo service.
+                    JBL BIZ LAW hosted on jblbizlaw.com is currently a demo service.
                     Please do not upload, submit, or store sensitive,
                     confidential, privileged, client, or personally identifiable
                     documents.

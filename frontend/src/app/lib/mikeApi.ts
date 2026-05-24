@@ -1,9 +1,8 @@
 /**
  * Mike API client — all requests to the Node.js backend.
- * Attaches the Supabase auth token for user authentication.
+ * Attaches the auth token for user authentication.
  */
 
-import { supabase } from "@/lib/supabase";
 import type {
     AssistantEvent,
     MikeChat,
@@ -34,15 +33,18 @@ interface ServerChatDetailOut {
     messages: ServerMessage[];
 }
 
+// API routes are now served by Next.js API routes, not a separate Express backend
 const API_BASE =
-    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001";
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api";
 
 async function getAuthHeader(): Promise<Record<string, string>> {
-    const {
-        data: { session },
-    } = await supabase.auth.getSession();
-    if (!session?.access_token) return {};
-    return { Authorization: `Bearer ${session.access_token}` };
+  if (typeof window === "undefined") return {};
+  const { getSession } = await import("next-auth/react");
+  const session = await getSession();
+  if (!session?.user?.id) return {};
+  // Create a simple JWT-like token for API auth
+  const token = btoa(JSON.stringify({ userId: session.user.id, email: session.user.email }));
+  return { Authorization: `Bearer ${token}` };
 }
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {

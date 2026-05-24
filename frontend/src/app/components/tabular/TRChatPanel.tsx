@@ -13,7 +13,7 @@ import {
     ChevronDown,
     Trash2,
 } from "lucide-react";
-import { MikeIcon } from "@/components/chat/mike-icon";
+import { BizLawIcon } from "@/components/chat/mike-icon";
 import {
     streamTabularChat,
     getTabularChats,
@@ -203,10 +203,10 @@ function TRResponseStatus({ isActive }: { isActive: boolean }) {
 
     return (
         <div className="w-full h-9 flex items-center mb-2">
-            <MikeIcon
+            <BizLawIcon
                 spin={isActive}
                 done={showDone && doneVisible}
-                mike={!(showDone && doneVisible)}
+                jbl={!(showDone && doneVisible)}
                 size={22}
             />
         </div>
@@ -1354,7 +1354,7 @@ export function TRChatPanel({
             {/* Header */}
             <div className="flex items-center justify-between h-8 px-2 border-b border-gray-200 shrink-0">
                 <div className="flex items-center gap-1.5 px-2 min-w-0">
-                    <MikeIcon mike size={14} />
+                    <BizLawIcon jbl size={14} />
                     <div
                         onMouseEnter={(e) => {
                             const el = e.currentTarget;
@@ -1431,7 +1431,7 @@ export function TRChatPanel({
             >
                 {messages.length === 0 && !isLoadingMessages && (
                     <div className="flex flex-1 flex-col items-center justify-center gap-2">
-                        <MikeIcon size={24} />
+                        <BizLawIcon size={24} />
                         <p className="text-sm text-gray-400 text-center">
                             Ask a question about this tabular review.
                         </p>

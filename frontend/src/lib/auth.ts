@@ -1,56 +1,63 @@
-import { NextRequest } from 'next/server';
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import crypto from "crypto";
 
-/**
- * Extract and validate user from Supabase JWT token
- * Returns user info if valid, null if invalid or missing
- * 
- * @param request NextRequest with Authorization header
- * @returns User object with email and id, or null
- */
-export async function getUserFromRequest(request: NextRequest): Promise<{
-  email: string;
-  id: string;
-} | null> {
-  try {
-    const authHeader = request.headers.get('Authorization');
-    
-    if (!authHeader?.startsWith('Bearer ')) {
-      return null;
-    }
-
-    const token = authHeader.substring(7);
-    
-    if (!token) {
-      return null;
-    }
-    
-    // Validate with Supabase
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!
-    );
-
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    
-    if (error || !user) {
-      console.warn('[Auth] Invalid or expired token:', error?.message);
-      return null;
-    }
-
-    if (!user.email) {
-      console.warn('[Auth] User has no email');
-      return null;
-    }
-
-    console.log(`[Auth] User authenticated: ${user.email}`);
-    return {
-      email: user.email,
-      id: user.id
-    };
-  } catch (error) {
-    console.error('[Auth] Error validating token:', error);
-    return null;
-  }
-}
-
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+        const email = (credentials.email as string).toLowerCase();
+        const password = credentials.password as string;
+        
+        const userRows = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, email))
+          .limit(1);
+        
+        const user = userRows[0];
+        if (!user) return null;
+        
+        const hashed = crypto
+          .createHash("sha256")
+          .update(password + user.password_salt)
+          .digest("hex");
+        
+        if (hashed !== user.password_hash) return null;
+        
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.display_name || null,
+        };
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+      }
+      return session;
+    },
+  },
+  pages: { signIn: "/login" },
+  session: { strategy: "jwt" },
+});

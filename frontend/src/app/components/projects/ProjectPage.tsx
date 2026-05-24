@@ -711,8 +711,8 @@ export function ProjectPage({ projectId, initialTab = "documents" }: Props) {
     function hasMovePayload(dt: DataTransfer): boolean {
         return Array.from(dt.types).some(
             (type) =>
-                type === "application/mike-doc" ||
-                type === "application/mike-folder",
+                type === "application/bizlaw-doc" ||
+                type === "application/bizlaw-folder",
         );
     }
 
@@ -738,8 +738,8 @@ export function ProjectPage({ projectId, initialTab = "documents" }: Props) {
 
     async function handleDropOnFolder(targetFolderId: string | null, dt: DataTransfer) {
         if (!hasMovePayload(dt)) return;
-        const docId = dt.getData("application/mike-doc");
-        const subFolderId = dt.getData("application/mike-folder");
+        const docId = dt.getData("application/bizlaw-doc");
+        const subFolderId = dt.getData("application/bizlaw-folder");
         if (docId) {
             const doc = (project?.documents ?? []).find((d) => d.id === docId);
             if (!doc || (doc.folder_id ?? null) === targetFolderId) return;
@@ -874,7 +874,7 @@ export function ProjectPage({ projectId, initialTab = "documents" }: Props) {
                                         e.preventDefault();
                                         return;
                                     }
-                                    e.dataTransfer.setData("application/mike-doc", doc.id);
+                                    e.dataTransfer.setData("application/bizlaw-doc", doc.id);
                                     e.dataTransfer.effectAllowed = "move";
                                 }}
                                 onClick={() => {
@@ -1056,7 +1056,7 @@ export function ProjectPage({ projectId, initialTab = "documents" }: Props) {
                                         e.preventDefault();
                                         return;
                                     }
-                                    e.dataTransfer.setData("application/mike-folder", folder.id);
+                                    e.dataTransfer.setData("application/bizlaw-folder", folder.id);
                                     e.dataTransfer.effectAllowed = "move";
                                     e.stopPropagation();
                                 }}
