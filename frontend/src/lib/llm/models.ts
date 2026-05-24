@@ -12,7 +12,6 @@ export const GEMINI_MAIN_MODELS = [
 export const OPENAI_MAIN_MODELS = ["gpt-5.5", "gpt-5.4-mini"] as const;
 export const DEEPSEEK_MAIN_MODELS = [
     "deepseek-v4-flash",
-    "deepseek-v4-pro",
 ] as const;
 
 // Mid-tier (used for tabular review) — user picks one in account settings.
@@ -33,17 +32,8 @@ export const DEFAULT_TITLE_MODEL = "deepseek-v4-flash";
 export const DEFAULT_TABULAR_MODEL = "deepseek-v4-flash";
 
 const ALL_MODELS = new Set<string>([
-    ...CLAUDE_MAIN_MODELS,
-    ...GEMINI_MAIN_MODELS,
-    ...OPENAI_MAIN_MODELS,
     ...DEEPSEEK_MAIN_MODELS,
-    ...CLAUDE_MID_MODELS,
-    ...GEMINI_MID_MODELS,
-    ...OPENAI_MID_MODELS,
     ...DEEPSEEK_MID_MODELS,
-    ...CLAUDE_LOW_MODELS,
-    ...GEMINI_LOW_MODELS,
-    ...OPENAI_LOW_MODELS,
     ...DEEPSEEK_LOW_MODELS,
 ]);
 

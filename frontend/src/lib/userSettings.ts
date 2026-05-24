@@ -4,7 +4,6 @@ import {
     DEFAULT_TITLE_MODEL,
     DEFAULT_TABULAR_MODEL,
     DEEPSEEK_LOW_MODELS,
-    OPENAI_LOW_MODELS,
     type UserApiKeys,
 } from "./llm";
 import { getUserApiKeys as getStoredUserApiKeys } from "./userApiKeys";
@@ -21,9 +20,6 @@ export type UserModelSettings = {
 // set, defaults to Gemini (the dev-mode env fallback).
 function resolveTitleModel(apiKeys: UserApiKeys): string {
     if (apiKeys.deepseek?.trim()) return DEEPSEEK_LOW_MODELS[0];
-    if (apiKeys.gemini?.trim()) return DEFAULT_TITLE_MODEL;
-    if (apiKeys.openai?.trim()) return OPENAI_LOW_MODELS[0];
-    if (apiKeys.claude?.trim()) return "claude-haiku-4-5";
     return DEFAULT_TITLE_MODEL;
 }
 

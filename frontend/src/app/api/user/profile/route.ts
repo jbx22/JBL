@@ -7,6 +7,22 @@ import { eq, sql } from "drizzle-orm";
 const MONTHLY_CREDIT_LIMIT = 999999;
 const DEFAULT_TABULAR_MODEL = "deepseek-v4-flash";
 
+function apiKeyStatus() {
+  const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY?.trim();
+  return {
+    deepseek: hasDeepSeek,
+    claude: false,
+    gemini: false,
+    openai: false,
+    sources: {
+      deepseek: hasDeepSeek ? "env" : null,
+      claude: null,
+      gemini: null,
+      openai: null,
+    },
+  };
+}
+
 // GET /api/user/profile
 export async function GET(req: NextRequest) {
   try {
@@ -59,6 +75,7 @@ export async function GET(req: NextRequest) {
       creditsRemaining: Math.max(MONTHLY_CREDIT_LIMIT - creditsUsed, 0),
       tier: row.tier || "Free",
       tabularModel: row.tabular_model || DEFAULT_TABULAR_MODEL,
+      apiKeyStatus: apiKeyStatus(),
     });
   } catch (err: any) {
     if (err instanceof Response) throw err;
