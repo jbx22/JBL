@@ -106,6 +106,9 @@ export interface UserProfile {
     creditsResetDate: string;
     creditsRemaining: number;
     tier: string;
+    role: "user" | "admin" | "super_admin";
+    accountStatus: "active" | "suspended" | "deleted";
+    suspensionReason: string | null;
     tabularModel: string;
     apiKeyStatus: ApiKeyStatus;
 }

@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { userProfiles, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 
@@ -33,6 +33,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .digest("hex");
         
         if (hashed !== user.password_hash) return null;
+
+        const [profile] = await db
+          .select({
+            account_status: userProfiles.account_status,
+          })
+          .from(userProfiles)
+          .where(eq(userProfiles.user_id, user.id))
+          .limit(1);
+
+        if (profile?.account_status === "suspended" || profile?.account_status === "deleted") {
+          return null;
+        }
         
         return {
           id: user.id,

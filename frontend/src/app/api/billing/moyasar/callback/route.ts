@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { userProfiles } from "@/db/schema";
+import { subscriptions, userProfiles } from "@/db/schema";
 import { getBillingPlan } from "@/lib/billing/plans";
 import { eq } from "drizzle-orm";
 
 type MoyasarCallback = {
+    id?: string;
     status?: string;
+    amount?: number;
+    currency?: string;
     metadata?: {
         plan_id?: string;
         user_id?: string;
@@ -19,6 +22,9 @@ export async function POST(req: NextRequest) {
     const userId = payload?.metadata?.user_id;
 
     if (payload?.status === "paid" && plan && userId) {
+        const periodEnd = new Date();
+        periodEnd.setMonth(periodEnd.getMonth() + 1);
+
         await db
             .update(userProfiles)
             .set({
@@ -26,6 +32,19 @@ export async function POST(req: NextRequest) {
                 updated_at: new Date(),
             })
             .where(eq(userProfiles.user_id, userId));
+
+        await db.insert(subscriptions).values({
+            user_id: userId,
+            provider: "moyasar",
+            provider_invoice_id: payload.id ?? null,
+            plan_id: plan.id,
+            tier: plan.tier,
+            status: "paid",
+            amount_cents: payload.amount ?? plan.amountHalalas,
+            currency: payload.currency ?? "SAR",
+            current_period_end: periodEnd,
+            metadata: payload,
+        });
     }
 
     return NextResponse.json({ ok: true });

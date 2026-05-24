@@ -7,6 +7,7 @@ import {
     FolderOpen,
     Table2,
     Library,
+    ShieldCheck,
     User,
     ChevronsUpDown,
     ChevronDown,
@@ -27,6 +28,8 @@ const NAV_ITEMS = [
     { href: "/tabular-reviews", label: "مراجعة الجداول", icon: Table2 },
     { href: "/workflows", label: "سير العمل", icon: Library },
 ];
+
+const ADMIN_NAV_ITEM = { href: "/admin", label: "Admin", icon: ShieldCheck };
 
 interface AppSidebarProps {
     isOpen: boolean;
@@ -165,7 +168,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
             </div>
 
             {/* Nav items */}
-            {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+            {[...NAV_ITEMS, ...(profile?.role === "admin" || profile?.role === "super_admin" ? [ADMIN_NAV_ITEM] : [])].map(({ href, label, icon: Icon }) => {
                 const isActive =
                     pathname === href || pathname.startsWith(href + "/");
                 return (

@@ -25,6 +25,9 @@ interface UserProfile {
     creditsResetDate: string;
     creditsRemaining: number;
     tier: string;
+    role: "user" | "admin" | "super_admin";
+    accountStatus: "active" | "suspended" | "deleted";
+    suspensionReason: string | null;
     tabularModel: string;
     apiKeys: ApiKeyState;
 }
@@ -106,6 +109,9 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
                 creditsResetDate: futureResetDate.toISOString(),
                 creditsRemaining: 0,
                 tier: "Free",
+                role: "user",
+                accountStatus: "active",
+                suspensionReason: null,
                 tabularModel: "deepseek-v4-flash",
                 apiKeys: emptyApiKeys(),
             });

@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { userProfiles, users } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { getTierPolicy } from "@/lib/billing/plans";
+import { envRoleForEmail } from "@/lib/admin";
 
 const DEFAULT_TABULAR_MODEL = "deepseek-v4-flash";
 
@@ -27,7 +28,7 @@ function apiKeyStatus() {
 // GET /api/user/profile
 export async function GET(req: NextRequest) {
   try {
-    const { userId } = await requireAuth();
+    const { userId, userEmail } = await requireAuth();
 
     let profile = await db
       .select({
@@ -36,6 +37,9 @@ export async function GET(req: NextRequest) {
         message_credits_used: userProfiles.message_credits_used,
         credits_reset_date: userProfiles.credits_reset_date,
         tier: userProfiles.tier,
+        role: userProfiles.role,
+        account_status: userProfiles.account_status,
+        suspension_reason: userProfiles.suspension_reason,
         tabular_model: userProfiles.tabular_model,
       })
       .from(userProfiles)
@@ -55,6 +59,9 @@ export async function GET(req: NextRequest) {
           message_credits_used: userProfiles.message_credits_used,
           credits_reset_date: userProfiles.credits_reset_date,
           tier: userProfiles.tier,
+          role: userProfiles.role,
+          account_status: userProfiles.account_status,
+          suspension_reason: userProfiles.suspension_reason,
           tabular_model: userProfiles.tabular_model,
         })
         .from(userProfiles)
@@ -69,6 +76,13 @@ export async function GET(req: NextRequest) {
 
     const creditsUsed = row.message_credits_used ?? 0;
     const tier = row.tier || "Free";
+    const envRole = envRoleForEmail(userEmail);
+    const role =
+      envRole === "super_admin" || row.role === "super_admin"
+        ? "super_admin"
+        : envRole === "admin" || row.role === "admin"
+          ? "admin"
+          : "user";
     const policy = getTierPolicy(tier);
     return NextResponse.json({
       displayName: row.display_name,
@@ -77,6 +91,9 @@ export async function GET(req: NextRequest) {
       creditsResetDate: row.credits_reset_date,
       creditsRemaining: Math.max(policy.monthlyAiRequests - creditsUsed, 0),
       tier,
+      role,
+      accountStatus: row.account_status || "active",
+      suspensionReason: row.suspension_reason,
       tabularModel: row.tabular_model || DEFAULT_TABULAR_MODEL,
       apiKeyStatus: apiKeyStatus(),
     });

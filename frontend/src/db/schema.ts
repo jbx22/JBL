@@ -39,6 +39,9 @@ export const userProfiles = pgTable(
     display_name: text("display_name"),
     organisation: text("organisation"),
     tier: text("tier").notNull().default("Free"),
+    role: text("role").notNull().default("user"),
+    account_status: text("account_status").notNull().default("active"),
+    suspension_reason: text("suspension_reason"),
     message_credits_used: integer("message_credits_used").notNull().default(0),
     credits_reset_date: timestamp("credits_reset_date", { withTimezone: true })
       .notNull()
@@ -49,6 +52,61 @@ export const userProfiles = pgTable(
   },
   (table) => [
     index("idx_user_profiles_user").on(table.user_id),
+  ]
+);
+
+// ---------------------------------------------------------------------------
+// Admin governance and billing records
+// ---------------------------------------------------------------------------
+export const adminAuditLogs = pgTable(
+  "admin_audit_logs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    actor_user_id: uuid("actor_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    actor_email: text("actor_email"),
+    action: text("action").notNull(),
+    entity_type: text("entity_type").notNull(),
+    entity_id: text("entity_id"),
+    target_user_id: uuid("target_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    metadata: jsonb("metadata").notNull().default("{}"),
+    ip_address: text("ip_address"),
+    created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("admin_audit_actor_idx").on(table.actor_user_id, table.created_at),
+    index("admin_audit_target_idx").on(table.target_user_id, table.created_at),
+    index("admin_audit_entity_idx").on(table.entity_type, table.entity_id),
+  ]
+);
+
+export const subscriptions = pgTable(
+  "subscriptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    user_id: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    provider: text("provider").notNull().default("moyasar"),
+    provider_invoice_id: text("provider_invoice_id"),
+    plan_id: text("plan_id").notNull(),
+    tier: text("tier").notNull(),
+    status: text("status").notNull().default("pending"),
+    amount_cents: integer("amount_cents").notNull().default(0),
+    currency: text("currency").notNull().default("SAR"),
+    started_at: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    current_period_end: timestamp("current_period_end", { withTimezone: true }),
+    canceled_at: timestamp("canceled_at", { withTimezone: true }),
+    metadata: jsonb("metadata").notNull().default("{}"),
+    created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("subscriptions_user_idx").on(table.user_id, table.status),
+    index("subscriptions_provider_invoice_idx").on(table.provider, table.provider_invoice_id),
   ]
 );
 
