@@ -4,6 +4,8 @@ import { users, userProfiles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 
+const DEFAULT_TABULAR_MODEL = "deepseek-v4-flash";
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password, name, organisation } = await req.json();
@@ -33,6 +35,7 @@ export async function POST(req: NextRequest) {
       user_id: newUser.id,
       display_name: name?.trim() || null,
       organisation: organisation?.trim() || null,
+      tabular_model: DEFAULT_TABULAR_MODEL,
     });
 
     return NextResponse.json({ ok: true, userId: newUser.id });

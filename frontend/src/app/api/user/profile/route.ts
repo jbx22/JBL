@@ -5,6 +5,7 @@ import { userProfiles, users } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 const MONTHLY_CREDIT_LIMIT = 999999;
+const DEFAULT_TABULAR_MODEL = "deepseek-v4-flash";
 
 // GET /api/user/profile
 export async function GET(req: NextRequest) {
@@ -26,7 +27,10 @@ export async function GET(req: NextRequest) {
 
     // Auto-create profile if missing
     if (profile.length === 0) {
-      await db.insert(userProfiles).values({ user_id: userId });
+      await db.insert(userProfiles).values({
+        user_id: userId,
+        tabular_model: DEFAULT_TABULAR_MODEL,
+      });
       profile = await db
         .select({
           display_name: userProfiles.display_name,
@@ -54,7 +58,7 @@ export async function GET(req: NextRequest) {
       creditsResetDate: row.credits_reset_date,
       creditsRemaining: Math.max(MONTHLY_CREDIT_LIMIT - creditsUsed, 0),
       tier: row.tier || "Free",
-      tabularModel: row.tabular_model || "deepseek-v4-flash",
+      tabularModel: row.tabular_model || DEFAULT_TABULAR_MODEL,
     });
   } catch (err: any) {
     if (err instanceof Response) throw err;
@@ -91,7 +95,11 @@ export async function PATCH(req: NextRequest) {
       .limit(1);
 
     if (existing.length === 0) {
-      await db.insert(userProfiles).values({ user_id: userId, ...update });
+      await db.insert(userProfiles).values({
+        user_id: userId,
+        tabular_model: DEFAULT_TABULAR_MODEL,
+        ...update,
+      });
     } else {
       await db
         .update(userProfiles)
