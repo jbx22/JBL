@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
     Activity,
@@ -128,7 +128,6 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 
 export default function AdminPage() {
     const router = useRouter();
-    const pathname = usePathname();
     const [overview, setOverview] = useState<AdminOverview | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -142,7 +141,7 @@ export default function AdminPage() {
     });
 
     const isSuperAdmin = overview?.principal.role === "super_admin";
-    const isSuperAdminPage = pathname === "/super-admin";
+    const isSuperAdminPage = false;
 
     const loadOverview = async () => {
         setError(null);

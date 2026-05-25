@@ -16,3 +16,9 @@ next-env.d.ts
 .DS_Store
 .vercel
 coverage
+
+# Local OpenClaw/Codex work notes.
+.codex_work/
+
+# Local OpenClaw task/session archive. Keep summaries in git, not raw transcripts.
+docs/openclaw-session-archive/raw/
