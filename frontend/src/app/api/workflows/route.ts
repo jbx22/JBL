@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/app/api/auth-helpers";
 import { db } from "@/db";
-import { workflows, hiddenWorkflows, workflowShares } from "@/db/schema";
-import { eq, desc, and, or } from "drizzle-orm";
+import { workflows, workflowShares } from "@/db/schema";
+import { eq, desc, or, inArray } from "drizzle-orm";
 import { errorToResponse } from "@/lib/http-error";
 
 // GET /api/workflows
@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
   try {
     const { userId, userEmail } = await requireAuth();
 
-    // Get user's own workflows and system workflows
+    const type = req.nextUrl.searchParams.get("type");
+
+    // Get user's own workflows and system workflows.
     const result = await db
       .select({
         id: workflows.id,
@@ -35,8 +37,40 @@ export async function GET(req: NextRequest) {
         desc(workflows.created_at)
       );
 
+    const normalizedEmail = userEmail.trim().toLowerCase();
+    const shares = normalizedEmail
+      ? await db
+          .select({
+            workflow_id: workflowShares.workflow_id,
+            shared_by_user_id: workflowShares.shared_by_user_id,
+            allow_edit: workflowShares.allow_edit,
+          })
+          .from(workflowShares)
+          .where(eq(workflowShares.shared_with_email, normalizedEmail))
+      : [];
+    const sharedIds = shares.map((share) => share.workflow_id);
+    const sharedWorkflows = sharedIds.length
+      ? await db
+          .select()
+          .from(workflows)
+          .where(inArray(workflows.id, sharedIds))
+      : [];
+
+    const ownAndSystem = result.filter((workflow) => !type || workflow.type === type);
+    const shared = sharedWorkflows
+      .filter((workflow) => !type || workflow.type === type)
+      .map((workflow) => {
+        const share = shares.find((row) => row.workflow_id === workflow.id);
+        return {
+          ...workflow,
+          allow_edit: Boolean(share?.allow_edit),
+          is_owner: false,
+          shared_by_name: null,
+        };
+      });
+
     return NextResponse.json(
-      result.map((w) => ({
+      ownAndSystem.map((w) => ({
         id: w.id,
         user_id: w.user_id,
         title: w.title,
@@ -46,8 +80,10 @@ export async function GET(req: NextRequest) {
         practice: w.practice,
         is_system: w.is_system,
         is_owner: w.user_id === userId || w.is_system,
+        allow_edit: true,
+        shared_by_name: null,
         created_at: w.created_at,
-      }))
+      })).concat(shared)
     );
   } catch (err: any) {
     const response = errorToResponse(err);
