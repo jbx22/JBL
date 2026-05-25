@@ -9,27 +9,6 @@ import Link from "next/link";
 import { SiteLogo } from "@/components/site-logo";
 import { useAuth } from "@/contexts/AuthContext";
 
-const demoAccounts = [
-    {
-        label: "User demo",
-        email: "demo@jblbizlaw.com",
-        password: "DemoUser123!",
-        callbackUrl: "/assistant",
-    },
-    {
-        label: "Admin demo",
-        email: "admin@jblbizlaw.com",
-        password: "AdminDemo123!",
-        callbackUrl: "/admin",
-    },
-    {
-        label: "Super admin demo",
-        email: "superadmin@jblbizlaw.com",
-        password: "SuperAdminDemo123!",
-        callbackUrl: "/super-admin",
-    },
-] as const;
-
 export default function LoginPage() {
     const router = useRouter();
     const { isAuthenticated, authLoading } = useAuth();
@@ -69,13 +48,6 @@ export default function LoginPage() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const useDemoAccount = (account: (typeof demoAccounts)[number]) => {
-        setEmail(account.email);
-        setPassword(account.password);
-        setCallbackUrl(account.callbackUrl);
-        setError(null);
     };
 
     return (
@@ -153,35 +125,6 @@ export default function LoginPage() {
                             {loading ? "Logging in..." : "Log in"}
                         </Button>
                     </form>
-                </div>
-                <div className="mb-4 space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
-                    <div>
-                        <div className="font-semibold">Demo accounts for testing</div>
-                        <div className="mt-1 text-xs text-amber-900">
-                            Pick a role to fill the form and open the matching page after login.
-                        </div>
-                    </div>
-                    {demoAccounts.map((account) => (
-                        <div
-                            key={account.email}
-                            className="flex flex-col gap-3 rounded-lg border border-amber-100 bg-white/75 p-3 sm:flex-row sm:items-center sm:justify-between"
-                        >
-                            <div>
-                                <div className="font-semibold">{account.label}</div>
-                                <div className="mt-1 break-all font-mono text-xs">
-                                    {account.email} / {account.password}
-                                </div>
-                            </div>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="border-amber-300 bg-white text-amber-950 hover:bg-amber-100"
-                                onClick={() => useDemoAccount(account)}
-                            >
-                                Use demo
-                            </Button>
-                        </div>
-                    ))}
                 </div>
                 <p className="text-center text-xs text-gray-500 leading-relaxed px-2">
                     JBL BIZ LAW hosted on jblbizlaw.com is currently a demo service.

@@ -14,7 +14,6 @@ import { eq, and } from 'drizzle-orm';
 import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import crypto from 'node:crypto';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FRONTEND_DIR = join(__dirname, '..');
@@ -146,7 +145,7 @@ Be precise with legal terminology in both languages.`,
   },
 ];
 
-const DEMO_ACCOUNTS = [
+const DEMO_ACCOUNTS = process.env.SEED_DEMO_ACCOUNTS === "true" ? [
   {
     email: 'demo@jblbizlaw.com',
     password: 'DemoUser123!',
@@ -171,7 +170,7 @@ const DEMO_ACCOUNTS = [
     role: 'super_admin',
     tier: 'Enterprise',
   },
-];
+  ] : [];
 
 function hashPassword(password, salt) {
   return crypto.createHash('sha256').update(password + salt).digest('hex');

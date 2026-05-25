@@ -23,13 +23,13 @@ import { listProjects } from "@/app/lib/mikeApi";
 import type { MikeProject } from "@/app/components/shared/types";
 
 const NAV_ITEMS = [
-    { href: "/assistant", label: "المساعد", icon: MessageSquare },
-    { href: "/projects", label: "المشاريع", icon: FolderOpen },
-    { href: "/tabular-reviews", label: "مراجعة الجداول", icon: Table2 },
-    { href: "/workflows", label: "سير العمل", icon: Library },
+    { href: "/assistant", label: "Assistant", icon: MessageSquare },
+    { href: "/projects", label: "Projects", icon: FolderOpen },
+    { href: "/tabular-reviews", label: "Tabular Review", icon: Table2 },
+    { href: "/workflows", label: "Workflows", icon: Library },
 ];
 
-const SUBSCRIPTION_NAV_ITEM = { href: "/subscription", label: "الاشتراك", icon: Crown };
+const SUBSCRIPTION_NAV_ITEM = { href: "/subscription", label: "Subscription", icon: Crown };
 
 interface AppSidebarProps {
     isOpen: boolean;
@@ -163,7 +163,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                 <button
                     onClick={onToggle}
                     className="h-9 w-9 p-2.5 items-center flex hover:bg-gray-100 rounded-md transition-colors"
-                    title={isOpen ? "إغلاق القائمة" : "فتح القائمة"}
+                    title={isOpen ? "Close sidebar" : "Open sidebar"}
                 >
                     <PanelLeft className="h-4 w-4" />
                 </button>
@@ -213,7 +213,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                 shouldAnimate ? "sidebar-fade-in" : ""
                             }`}
                         >
-                            <span>المشاريع الأخيرة</span>
+                            <span>Recent Projects</span>
                             <ChevronDown
                                 className={`h-3.5 w-3.5 transition-transform ${
                                     projectsCollapsed ? "-rotate-90" : ""
@@ -244,7 +244,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                                 : ""
                                         }`}
                                     >
-                                        لا توجد مشاريع بعد
+                                        No projects yet
                                     </div>
                                 ) : (
                                     <div
@@ -297,7 +297,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                 shouldAnimate ? "sidebar-fade-in" : ""
                             }`}
                         >
-                            <span>سجل المساعد</span>
+                            <span>Assistant History</span>
                             <ChevronDown
                                 className={`h-3.5 w-3.5 transition-transform ${
                                     historyCollapsed ? "-rotate-90" : ""
@@ -329,7 +329,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                         shouldAnimate ? "sidebar-fade-in-2" : ""
                                     }`}
                                 >
-                                    لا توجد محادثات بعد
+                                    No chats yet
                                 </div>
                             ) : (
                                 <>
@@ -371,7 +371,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                                 onClick={loadMoreChats}
                                                 className="flex h-8 w-full items-center justify-start rounded-md px-3 text-left text-xs font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
                                             >
-                                                تحميل المزيد
+                                                Load more
                                             </button>
                                         </div>
                                     )}
@@ -429,8 +429,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 rounded-md"
                                 >
                                     <User className="h-4 w-4" />
-                                    إعدادات الحساب
-                                </button>
+                                    Account settings</button>
                                 <button
                                     onClick={() => {
                                         router.push("/subscription");
@@ -439,8 +438,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 rounded-md"
                                 >
                                     <Crown className="h-4 w-4 text-amber-500" />
-                                    ترقية الاشتراك
-                                </button>
+                                    Upgrade subscription</button>
                             </div>
                         )}
                     </div>

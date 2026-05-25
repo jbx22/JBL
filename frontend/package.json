@@ -12,6 +12,7 @@
         "db:migrate": "drizzle-kit generate && drizzle-kit push",
         "db:studio": "drizzle-kit studio",
         "db:seed": "node scripts/seed.mjs",
+        "db:clean-demo": "node scripts/clean-demo-data.mjs",
         "auth:secret": "npx auth secret",
         "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
         "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",

@@ -3,6 +3,7 @@ import { requireAuth } from "@/app/api/auth-helpers";
 import { db } from "@/db";
 import { projects, projectSubfolders, documents, chats } from "@/db/schema";
 import { eq, sql, desc } from "drizzle-orm";
+import { errorToResponse } from "@/lib/http-error";
 
 // GET /api/projects — list projects for current user
 export async function GET(req: NextRequest) {
@@ -18,6 +19,9 @@ export async function GET(req: NextRequest) {
         shared_with: projects.shared_with,
         created_at: projects.created_at,
         updated_at: projects.updated_at,
+        document_count: sql<number>`(select count(*) from ${documents} where ${documents.project_id} = ${projects.id})`,
+        chat_count: sql<number>`(select count(*) from ${chats} where ${chats.project_id} = ${projects.id})`,
+        review_count: sql<number>`(select count(*) from tabular_reviews where project_id = ${projects.id})`,
       })
       .from(projects)
       .where(eq(projects.user_id, userId))
@@ -35,6 +39,9 @@ export async function GET(req: NextRequest) {
           shared_with: projects.shared_with,
           created_at: projects.created_at,
           updated_at: projects.updated_at,
+          document_count: sql<number>`(select count(*) from ${documents} where ${documents.project_id} = ${projects.id})`,
+          chat_count: sql<number>`(select count(*) from ${chats} where ${chats.project_id} = ${projects.id})`,
+          review_count: sql<number>`(select count(*) from tabular_reviews where project_id = ${projects.id})`,
         })
         .from(projects)
         .where(
@@ -52,11 +59,15 @@ export async function GET(req: NextRequest) {
       shared_with: p.shared_with || [],
       created_at: p.created_at,
       updated_at: p.updated_at,
+      document_count: Number(p.document_count ?? 0),
+      chat_count: Number(p.chat_count ?? 0),
+      review_count: Number(p.review_count ?? 0),
     }));
 
     return NextResponse.json(allProjects);
   } catch (err: any) {
-    if (err instanceof Response) throw err;
+    const response = errorToResponse(err);
+    if (response) return response;
     console.error("GET /api/projects error:", err);
     return NextResponse.json({ detail: "Internal server error" }, { status: 500 });
   }
@@ -84,7 +95,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(project);
   } catch (err: any) {
-    if (err instanceof Response) throw err;
+    const response = errorToResponse(err);
+    if (response) return response;
     console.error("POST /api/projects error:", err);
     return NextResponse.json({ detail: "Internal server error" }, { status: 500 });
   }

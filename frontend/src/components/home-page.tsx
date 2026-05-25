@@ -250,13 +250,6 @@ const plans = {
     ],
 } satisfies Record<Locale, Plan[]>;
 
-const howItWorksImages = [
-    "/screenshots/assistant.jpg",
-    "/screenshots/projects.jpg",
-    "/screenshots/tabular-review.jpg",
-    "/screenshots/workflows.jpg",
-];
-
 function localizedPath(locale: Locale, path: string) {
     return locale === "ar" ? path : `/en${path}`;
 }
@@ -409,20 +402,14 @@ export function HomePage({ locale = "ar" }: { locale?: Locale }) {
                             {t.howItWorksIntro as string}
                         </h2>
                     </div>
-                    <div className="mt-9 grid gap-5 lg:grid-cols-2">
+                    <div className="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
                         {(t.howItWorksItems as string[][]).map(([title, body], index) => (
-                            <article key={title} className="overflow-hidden rounded-md border border-[#ded6c3] bg-white">
-                                <div className="bg-[#e4e7eb] p-4 md:p-6">
-                                    <img
-                                        src={howItWorksImages[index]}
-                                        alt={title}
-                                        className="aspect-[16/11] w-full rounded-md object-cover object-top shadow-sm"
-                                    />
+                            <article key={title} className="rounded-md border border-[#ded6c3] bg-white p-6">
+                                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-md bg-[#f6f1e6] text-sm font-bold text-[#8d7330]">
+                                    {index + 1}
                                 </div>
-                                <div className="p-6">
-                                    <h3 className="text-2xl font-extrabold text-[#151827]">{title}</h3>
-                                    <p className="mt-3 leading-8 text-[#55565c]">{body}</p>
-                                </div>
+                                <h3 className="text-2xl font-extrabold text-[#151827]">{title}</h3>
+                                <p className="mt-3 leading-8 text-[#55565c]">{body}</p>
                             </article>
                         ))}
                     </div>
