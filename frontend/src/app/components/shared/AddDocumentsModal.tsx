@@ -39,6 +39,7 @@ export function AddDocumentsModal({
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [uploading, setUploading] = useState(false);
     const [uploadingFilenames, setUploadingFilenames] = useState<string[]>([]);
+    const [uploadError, setUploadError] = useState<string | null>(null);
     const [search, setSearch] = useState("");
     const [extraUploadedDocs, setExtraUploadedDocs] = useState<MikeDocument[]>([]);
     // IDs deleted in this session — hidden locally since `useDirectoryData`'s
@@ -54,6 +55,7 @@ export function AddDocumentsModal({
         setExtraUploadedDocs([]);
         setDeletedIds(new Set());
         setUploadingFilenames([]);
+        setUploadError(null);
     }, [open]);
 
     if (!open) return null;
@@ -179,6 +181,7 @@ export function AddDocumentsModal({
         if (!files.length) return;
         setUploadingFilenames(files.map((file) => file.name));
         setUploading(true);
+        setUploadError(null);
         try {
             const uploaded = await Promise.all(
                 files.map((f) =>
@@ -193,7 +196,7 @@ export function AddDocumentsModal({
                 setSelectedIds((prev) => new Set([...prev, d.id])),
             );
         } catch (err) {
-            console.error("Upload failed:", err);
+            setUploadError(readUploadError(err));
         } finally {
             setUploading(false);
             setUploadingFilenames([]);
@@ -286,6 +289,11 @@ export function AddDocumentsModal({
                             )}
                             {uploading ? "Uploading…" : "Upload"}
                         </button>
+                        {uploadError && (
+                            <p className="mt-1 max-w-xs text-xs text-red-600">
+                                {uploadError}
+                            </p>
+                        )}
                     </div>
                     <div className="flex items-center gap-2">
                         {selectedIds.size > 0 && (
@@ -317,4 +325,16 @@ export function AddDocumentsModal({
         </div>,
         document.body,
     );
+}
+
+function readUploadError(err: unknown): string {
+    if (err instanceof Error && err.message) {
+        try {
+            const parsed = JSON.parse(err.message) as { detail?: string };
+            return parsed.detail ?? err.message;
+        } catch {
+            return err.message;
+        }
+    }
+    return "Upload failed. Please try a PDF, DOCX, or DOC file.";
 }

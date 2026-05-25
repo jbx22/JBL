@@ -37,6 +37,7 @@ function getClient(): S3Client {
 }
 
 const BUCKET = process.env.R2_BUCKET_NAME ?? "mike";
+const LOCAL_STORAGE_ROOT = process.env.LOCAL_STORAGE_DIR ?? ".data/uploads";
 
 export const storageEnabled = Boolean(
   R2_ENDPOINT &&
@@ -52,6 +53,19 @@ function requireStorageConfig(): void {
   }
 }
 
+function localStoragePath(key: string): string {
+  const parts = key.split(/[\\/]+/).filter((part) => part && part !== ".");
+  if (parts.some((part) => part === "..")) {
+    throw new Error("Invalid storage key");
+  }
+  return [LOCAL_STORAGE_ROOT.replace(/[\\/]+$/, ""), ...parts].join("/");
+}
+
+function localStorageDir(filePath: string): string {
+  const idx = filePath.lastIndexOf("/");
+  return idx >= 0 ? filePath.slice(0, idx) : ".";
+}
+
 // ---------------------------------------------------------------------------
 // Upload
 // ---------------------------------------------------------------------------
@@ -61,6 +75,13 @@ export async function uploadFile(
   content: ArrayBuffer,
   contentType: string,
 ): Promise<void> {
+  if (!storageEnabled) {
+    const { mkdir, writeFile } = await import("node:fs/promises");
+    const filePath = localStoragePath(key);
+    await mkdir(localStorageDir(filePath), { recursive: true });
+    await writeFile(filePath, Buffer.from(content));
+    return;
+  }
   requireStorageConfig();
   const client = getClient();
   await client.send(
@@ -78,7 +99,18 @@ export async function uploadFile(
 // ---------------------------------------------------------------------------
 
 export async function downloadFile(key: string): Promise<ArrayBuffer | null> {
-  if (!storageEnabled) return null;
+  if (!storageEnabled) {
+    try {
+      const { readFile } = await import("node:fs/promises");
+      const bytes = await readFile(localStoragePath(key));
+      return bytes.buffer.slice(
+        bytes.byteOffset,
+        bytes.byteOffset + bytes.byteLength,
+      ) as ArrayBuffer;
+    } catch {
+      return null;
+    }
+  }
   try {
     const client = getClient();
     const response = await client.send(
@@ -97,7 +129,15 @@ export async function downloadFile(key: string): Promise<ArrayBuffer | null> {
 // ---------------------------------------------------------------------------
 
 export async function deleteFile(key: string): Promise<void> {
-  if (!storageEnabled) return;
+  if (!storageEnabled) {
+    try {
+      const { unlink } = await import("node:fs/promises");
+      await unlink(localStoragePath(key));
+    } catch {
+      // Missing local files should not block document deletion.
+    }
+    return;
+  }
   const client = getClient();
   await client.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
 }

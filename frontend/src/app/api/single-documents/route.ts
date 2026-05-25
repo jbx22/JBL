@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/app/api/auth-helpers";
 import { db } from "@/db";
-import {
-  documents,
-  documentVersions,
-  projects,
-  projectSubfolders,
-  users,
-} from "@/db/schema";
+import { documents } from "@/db/schema";
 import { eq, sql, desc, and } from "drizzle-orm";
 import { ensureDocAccess } from "@/app/api/access";
+import { uploadDocumentForUser } from "@/app/api/document-upload";
+import { errorToResponse } from "@/lib/http-error";
+
+export const runtime = "nodejs";
 
 // GET /api/single-documents — list user's documents
 export async function GET(req: NextRequest) {
@@ -52,10 +50,15 @@ export async function GET(req: NextRequest) {
 // POST /api/single-documents — upload document
 // NOTE: This is a stub - full implementation requires R2 integration
 export async function POST(req: NextRequest) {
-  return NextResponse.json(
-    { detail: "Document upload not yet ported to Next.js API" },
-    { status: 501 }
-  );
+  try {
+    const { userId } = await requireAuth();
+    return await uploadDocumentForUser(req, userId, null);
+  } catch (err: any) {
+    const authError = errorToResponse(err);
+    if (authError) return authError;
+    console.error("POST /api/single-documents error:", err);
+    return NextResponse.json({ detail: "Internal server error" }, { status: 500 });
+  }
 }
 
 // DELETE /api/single-documents/:id

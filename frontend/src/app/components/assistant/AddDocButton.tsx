@@ -20,19 +20,21 @@ interface Props {
 export function AddDocButton({ onSelectDoc, onBrowseAll, selectedDocIds = [] }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
         if (!files.length) return;
         setUploading(true);
+        setUploadError(null);
         try {
             const uploaded = await Promise.all(
                 files.map((f) => uploadStandaloneDocument(f)),
             );
             uploaded.forEach((doc) => onSelectDoc(doc));
         } catch (err) {
-            console.error("Upload failed:", err);
+            setUploadError(readUploadError(err));
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = "";
@@ -49,6 +51,7 @@ export function AddDocButton({ onSelectDoc, onBrowseAll, selectedDocIds = [] }: 
                 className="hidden"
                 onChange={handleUpload}
             />
+            <div className="relative">
             <DropdownMenu onOpenChange={setIsOpen}>
                 <DropdownMenuTrigger asChild>
                     <button
@@ -105,6 +108,24 @@ export function AddDocButton({ onSelectDoc, onBrowseAll, selectedDocIds = [] }: 
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+                {uploadError && (
+                    <div className="absolute top-10 left-0 max-w-xs rounded-lg border border-red-200 bg-white px-3 py-2 text-xs text-red-700 shadow-lg z-50">
+                        {uploadError}
+                    </div>
+                )}
+            </div>
         </>
     );
+}
+
+function readUploadError(err: unknown): string {
+    if (err instanceof Error && err.message) {
+        try {
+            const parsed = JSON.parse(err.message) as { detail?: string };
+            return parsed.detail ?? err.message;
+        } catch {
+            return err.message;
+        }
+    }
+    return "Upload failed. Please try a PDF, DOCX, or DOC file.";
 }

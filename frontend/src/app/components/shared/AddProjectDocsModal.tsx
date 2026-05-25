@@ -42,12 +42,14 @@ export function AddProjectDocsModal({
     const [search, setSearch] = useState("");
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (!open) return;
         setSearch("");
         setSelectedIds(new Set());
+        setUploadError(null);
         let cancelled = false;
         setLoading(true);
         getProject(projectId)
@@ -97,6 +99,7 @@ export function AddProjectDocsModal({
         const files = Array.from(e.target.files || []);
         if (!files.length) return;
         setUploading(true);
+        setUploadError(null);
         try {
             const uploaded = await Promise.all(
                 files.map((f) => uploadProjectDocument(projectId, f)),
@@ -108,7 +111,7 @@ export function AddProjectDocsModal({
                 return next;
             });
         } catch (err) {
-            console.error("Upload failed:", err);
+            setUploadError(readUploadError(err));
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = "";
@@ -270,6 +273,11 @@ export function AddProjectDocsModal({
                             )}
                             {uploading ? "Uploading…" : "Upload"}
                         </button>
+                        {uploadError && (
+                            <p className="mt-1 max-w-xs text-xs text-red-600">
+                                {uploadError}
+                            </p>
+                        )}
                     </div>
                     <div className="flex items-center gap-2">
                         {selectedIds.size > 0 && (
@@ -296,4 +304,16 @@ export function AddProjectDocsModal({
         </div>,
         document.body,
     );
+}
+
+function readUploadError(err: unknown): string {
+    if (err instanceof Error && err.message) {
+        try {
+            const parsed = JSON.parse(err.message) as { detail?: string };
+            return parsed.detail ?? err.message;
+        } catch {
+            return err.message;
+        }
+    }
+    return "Upload failed. Please try a PDF, DOCX, or DOC file.";
 }

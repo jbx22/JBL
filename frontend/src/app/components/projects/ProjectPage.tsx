@@ -730,7 +730,7 @@ export function ProjectPage({ projectId, initialTab = "documents" }: Props) {
             invalidateDirectoryCache();
             handleDocsSelected(uploaded);
         } catch (err) {
-            console.error("Project document drop upload failed", err);
+            console.warn("Project document drop upload failed", err);
         } finally {
             setUploadingDroppedFilenames([]);
         }

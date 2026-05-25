@@ -214,7 +214,7 @@ export function TRView({ reviewId, projectId }: Props) {
             }
             await handleAddDocuments(uploaded);
         } catch (err) {
-            console.error("Tabular review document drop upload failed", err);
+            console.warn("Tabular review document drop upload failed", err);
         } finally {
             setUploadingDroppedFilenames([]);
         }
