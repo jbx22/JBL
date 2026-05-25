@@ -28,7 +28,7 @@ const content = {
         otherHref: "/en",
         otherLabel: "English",
         otherFlag: "🇺🇸",
-        open: "افتح المنصة",
+        open: "تسجيل الدخول للمنصة",
         nav: ["الهوية", "كيف يعمل", "الرسالة والرؤية", "الأهداف", "الاشتراكات", "تواصل معنا"],
         badge: "ذكاء قانوني عملي للمتحدثين بالعربية",
         title: "JBL يساعد المتحدثين بالعربية على فهم القانون الأمريكي والأوروبي والعمل به بثقة.",
@@ -81,14 +81,14 @@ const content = {
         freeCta: "إنشاء حساب",
         contact: "تواصل معنا",
         finalTitle: "ابدأ بسؤال قانوني أو مستند واحد، ثم حوّله إلى نموذج أو عقد أو خطة عمل واضحة.",
-        finalCta: "الدخول إلى المساعد",
+        finalCta: "تسجيل الدخول للمنصة",
     },
     en: {
         dir: "ltr",
         otherHref: "/",
         otherLabel: "العربية",
         otherFlag: "🇸🇦",
-        open: "Open app",
+        open: "Log in to app",
         nav: ["Identity", "How it works", "Mission & vision", "Goals", "Pricing", "Contact"],
         badge: "Practical legal AI for Arabic speakers",
         title: "JBL helps Arabic speakers navigate U.S. and European law with confidence.",
@@ -141,7 +141,7 @@ const content = {
         freeCta: "Create account",
         contact: "Contact us",
         finalTitle: "Start with one legal question or document, then turn it into a form, contract, or clear action plan.",
-        finalCta: "Go to assistant",
+        finalCta: "Log in to app",
     },
 } satisfies Record<Locale, Record<string, unknown>>;
 
@@ -321,7 +321,7 @@ export function HomePage({ locale = "ar" }: { locale?: Locale }) {
                     <div className="flex items-center gap-2">
                         <LanguageSwitcher locale={locale} />
                         <Link
-                            href="/assistant"
+                            href="/login?callbackUrl=/assistant"
                             className="inline-flex items-center gap-2 rounded-md bg-[#1a1a2e] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#2b2d4d]"
                         >
                             {t.open as string}
@@ -504,7 +504,7 @@ export function HomePage({ locale = "ar" }: { locale?: Locale }) {
                 <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-12 md:flex-row md:items-center md:justify-between md:px-8">
                     <h2 className="max-w-3xl text-3xl font-extrabold">{t.finalTitle as string}</h2>
                     <Link
-                        href="/assistant"
+                        href="/login?callbackUrl=/assistant"
                         className="inline-flex items-center justify-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-bold text-[#1a1a2e] transition hover:bg-[#f2ead7]"
                     >
                         {t.finalCta as string}

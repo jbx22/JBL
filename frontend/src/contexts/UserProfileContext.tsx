@@ -99,7 +99,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
             setProfile(toProfile(profileData));
         } catch {
             setProfile(null);
-            await nextAuthSignOut({ callbackUrl: "/login" });
+            await nextAuthSignOut({ redirect: false });
         } finally {
             setLoading(false);
         }

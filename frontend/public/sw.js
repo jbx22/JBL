@@ -1,5 +1,5 @@
-const CACHE_NAME = 'jbl-biz-law-v2';
-const urlsToCache = ['/', '/manifest.json'];
+const CACHE_NAME = 'jbl-biz-law-v3';
+const urlsToCache = ['/manifest.json'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -10,16 +10,14 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
-    )
+    caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
   );
   self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request));
+    event.respondWith(fetch(event.request, { cache: 'no-store' }));
     return;
   }
 
