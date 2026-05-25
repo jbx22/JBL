@@ -7,12 +7,10 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { SiteLogo } from "@/components/site-logo";
 import { CheckCircle2 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { signIn } from "next-auth/react";
 
 export default function SignupPage() {
     const router = useRouter();
-    const { isAuthenticated, authLoading } = useAuth();
     const [callbackUrl, setCallbackUrl] = useState("/assistant");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -30,12 +28,6 @@ export default function SignupPage() {
             setCallbackUrl(next);
         }
     }, []);
-
-    useEffect(() => {
-        if (!authLoading && isAuthenticated && !success) {
-            router.replace(callbackUrl);
-        }
-    }, [authLoading, isAuthenticated, router, success, callbackUrl]);
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();

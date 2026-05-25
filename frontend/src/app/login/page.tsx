@@ -7,11 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { SiteLogo } from "@/components/site-logo";
-import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
     const router = useRouter();
-    const { isAuthenticated, authLoading } = useAuth();
     const [callbackUrl, setCallbackUrl] = useState("/assistant");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -25,12 +23,6 @@ export default function LoginPage() {
             setCallbackUrl(next);
         }
     }, []);
-
-    useEffect(() => {
-        if (!authLoading && isAuthenticated) {
-            router.replace(callbackUrl);
-        }
-    }, [authLoading, isAuthenticated, router, callbackUrl]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
