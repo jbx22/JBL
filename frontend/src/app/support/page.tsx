@@ -31,23 +31,23 @@ export default function SupportPage() {
     }[] = [
         {
             value: "bug",
-            label: "Bug Report",
-            description: "Report something that isn't working",
+            label: "بلاغ عن مشكلة",
+            description: "أبلغنا عن شيء لا يعمل كما يجب",
         },
         {
             value: "feature",
-            label: "Feature Request",
-            description: "Suggest a new feature or improvement",
+            label: "اقتراح ميزة",
+            description: "اقترح ميزة جديدة أو تحسيناً",
         },
         {
             value: "question",
-            label: "Question",
-            description: "Ask a question about using JBL BIZ LAW",
+            label: "سؤال",
+            description: "اسأل عن استخدام جبل بيز لو",
         },
         {
             value: "other",
-            label: "Other",
-            description: "General feedback or other inquiries",
+            label: "أخرى",
+            description: "ملاحظات عامة أو استفسارات أخرى",
         },
     ];
 
@@ -70,13 +70,13 @@ export default function SupportPage() {
             });
 
             if (!response.ok) {
-                throw new Error("Failed to submit feedback");
+                throw new Error("Failed to submit support request");
             }
 
             setIsSubmitted(true);
         } catch (err) {
-            console.error("Error submitting feedback:", err);
-            setError("Failed to submit your feedback. Please try again.");
+            console.error("Error submitting support request:", err);
+            setError("تعذر إرسال طلبك. يرجى المحاولة مرة أخرى.");
         } finally {
             setIsSubmitting(false);
         }
@@ -84,7 +84,7 @@ export default function SupportPage() {
 
     if (isSubmitted) {
         return (
-            <div className="h-full flex items-center justify-center p-4">
+            <div className="h-full flex items-center justify-center p-4" dir="rtl">
                 <div className="max-w-md w-full bg-white rounded-xl text-center">
                     <div className="flex justify-center mb-4">
                         <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -92,16 +92,16 @@ export default function SupportPage() {
                         </div>
                     </div>
                     <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                        Thank you for helping us improve.
+                        شكراً لك، تم استلام طلبك.
                     </h2>
                     <p className="text-gray-600 mb-6">
-                        We will get in touch with you soon via email.
+                        سنتواصل معك قريباً عبر البريد الإلكتروني.
                     </p>
                     <button
                         onClick={() => router.push("/")}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
                     >
-                        Back to Home
+                        العودة للرئيسية
                     </button>
                 </div>
             </div>
@@ -109,13 +109,13 @@ export default function SupportPage() {
     }
 
     return (
-        <div className="w-full flex flex-col px-6 h-full">
+        <div className="w-full flex flex-col px-6 h-full" dir="rtl">
             <div className="w-full max-w-4xl m-auto flex flex-col h-full">
                 {/* Fixed Header Section */}
                 <div className="flex-shrink-0 pt-6 md:pt-10 pb-0">
                     <div className="mb-5">
                         <h1 className="text-4xl font-medium font-eb-garamond text-gray-900 mb-3">
-                            Support
+                            الدعم
                         </h1>
                     </div>
                 </div>
@@ -127,7 +127,7 @@ export default function SupportPage() {
                             {/* Feedback Type Selection */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                                    What can we help you with?
+                                    كيف يمكننا مساعدتك؟
                                 </label>
                                 <div className="grid grid-cols-2 gap-3">
                                     {feedbackTypes.map((type) => (
@@ -137,7 +137,7 @@ export default function SupportPage() {
                                             onClick={() =>
                                                 setFeedbackType(type.value)
                                             }
-                                            className={`p-4 rounded-lg border-2 text-left transition-all ${
+                                            className={`p-4 rounded-lg border-2 text-right transition-all ${
                                                 feedbackType === type.value
                                                     ? "border-blue-600 bg-blue-50"
                                                     : "border-gray-200 hover:border-gray-300"
@@ -167,7 +167,7 @@ export default function SupportPage() {
                                         htmlFor="link"
                                         className="block text-sm font-medium text-gray-700 mb-2"
                                     >
-                                        Link to issue (optional)
+                                        رابط المشكلة (اختياري)
                                     </label>
                                     <input
                                         type="url"
@@ -180,10 +180,7 @@ export default function SupportPage() {
                                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
-                                        If the bug is in a chat, mouseover the
-                                        chat in the sidebar, click the dots,
-                                        then click share and paste the link
-                                        here.
+                                        إذا كانت المشكلة داخل محادثة، افتح خيارات المحادثة من الشريط الجانبي ثم اختر مشاركة والصق الرابط هنا.
                                     </p>
                                 </div>
                             )}
@@ -194,7 +191,7 @@ export default function SupportPage() {
                                     htmlFor="subject"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    Subject
+                                    الموضوع
                                 </label>
                                 <input
                                     type="text"
@@ -212,13 +209,13 @@ export default function SupportPage() {
                                     htmlFor="message"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    Message
+                                    الرسالة
                                 </label>
                                 <textarea
                                     id="message"
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
-                                    placeholder="Please describe your question, issue, or suggestion in detail..."
+                                    placeholder="اكتب سؤالك أو المشكلة أو الاقتراح بالتفصيل..."
                                     rows={5}
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
                                     required
@@ -228,7 +225,7 @@ export default function SupportPage() {
                             {/* Email Display (if logged in) */}
                             {user?.email && (
                                 <div className="text-sm text-gray-500">
-                                    We'll respond to:{" "}
+                                    سنرد على:{" "}
                                     <span className="font-medium">
                                         {user.email}
                                     </span>
@@ -255,12 +252,12 @@ export default function SupportPage() {
                                 {isSubmitting ? (
                                     <>
                                         <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        <span>Sending...</span>
+                                        <span>جار الإرسال...</span>
                                     </>
                                 ) : (
                                     <>
                                         <Send className="h-4 w-4" />
-                                        <span>Submit</span>
+                                        <span>إرسال</span>
                                     </>
                                 )}
                             </button>
