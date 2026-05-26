@@ -3,7 +3,7 @@
  * Uses Drizzle ORM instead of Supabase client.
  */
 import { db } from "@/db";
-import { projects, documents, tabularReviews } from "@/db/schema";
+import { projects, documents } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 export type ProjectAccess =

@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
       }));
 
     return NextResponse.json(reviews);
-  } catch (err: any) {
+  } catch (err: unknown) {
     const response = errorToResponse(err);
     if (response) return response;
     console.error("GET /api/tabular-review error:", err);
@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
       .returning();
 
     return NextResponse.json(review);
-  } catch (err: any) {
+  } catch (err: unknown) {
     const response = errorToResponse(err);
     if (response) return response;
     console.error("POST /api/tabular-review error:", err);

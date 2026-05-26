@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { requireAuth } from "@/app/api/auth-helpers";
 import { db } from "@/db";
 import { documents, tabularCells, tabularReviews } from "@/db/schema";
