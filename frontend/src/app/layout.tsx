@@ -61,7 +61,10 @@ export default function RootLayout({
         <html lang="ar" dir="rtl">
             <head>
                 <meta name="theme-color" content="#1a1a2e" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, viewport-fit=cover"
+                />
                 <link rel="manifest" href="/manifest.json" />
             </head>
             <body

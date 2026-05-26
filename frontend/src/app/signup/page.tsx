@@ -36,14 +36,14 @@ export default function SignupPage() {
 
         // Validate passwords match
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            setError("كلمتا المرور غير متطابقتين");
             setLoading(false);
             return;
         }
 
         // Validate password length
         if (password.length < 6) {
-            setError("Password must be at least 6 characters");
+            setError("يجب أن تتكون كلمة المرور من 6 أحرف على الأقل");
             setLoading(false);
             return;
         }
@@ -62,7 +62,7 @@ export default function SignupPage() {
 
             if (!res.ok) {
                 const data = await res.json();
-                throw new Error(data?.detail || "An error occurred during signup");
+                throw new Error(data?.detail || "حدث خطأ أثناء إنشاء الحساب");
             }
 
             setSuccess(true);
@@ -74,7 +74,7 @@ export default function SignupPage() {
             setError(
                 error instanceof Error
                     ? error.message
-                    : "An error occurred during signup",
+                    : "حدث خطأ أثناء إنشاء الحساب",
             );
         } finally {
             setLoading(false);
@@ -84,7 +84,7 @@ export default function SignupPage() {
     // Success View
     if (success) {
         return (
-            <div className="min-h-dvh bg-white flex items-start justify-center px-6 pt-32 md:pt-40 pb-10 relative">
+            <div className="min-h-dvh bg-white flex items-start justify-center px-6 pt-32 md:pt-40 pb-10 relative" dir="rtl">
                 <div className="absolute top-4 md:top-8 left-1/2 -translate-x-1/2">
                     <SiteLogo size="md" className="md:text-4xl" asLink />
                 </div>
@@ -94,10 +94,10 @@ export default function SignupPage() {
                             <CheckCircle2 className="h-6 w-6 text-green-600" />
                         </div>
                         <h2 className="text-2xl font-semibold text-gray-900 mb-3">
-                            Account created!
+                            تم إنشاء الحساب
                         </h2>
                         <p className="text-gray-600 leading-relaxed">
-                            Redirecting you to the home page...
+                            جار تحويلك إلى الصفحة الرئيسية...
                         </p>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ export default function SignupPage() {
 
     // Default Signup Form View
     return (
-        <div className="min-h-dvh bg-white flex items-start justify-center px-6 pt-32 md:pt-40 pb-10 relative">
+        <div className="min-h-dvh bg-white flex items-start justify-center px-6 pt-32 md:pt-40 pb-10 relative" dir="rtl">
             <div className="absolute top-4 md:top-8 left-1/2 -translate-x-1/2">
                 <SiteLogo size="md" className="md:text-4xl" asLink />
             </div>
@@ -115,17 +115,17 @@ export default function SignupPage() {
                 <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-4">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-left text-2xl font-serif">
-                            Create Account
+                            إنشاء حساب
                         </h2>
                         <div className="bg-gray-100 p-1 rounded-md flex text-xs font-medium">
                             <Link
                                 href="/login"
                                 className="px-3 py-1 text-gray-500 hover:text-gray-900"
                             >
-                                Log in
+                                تسجيل الدخول
                             </Link>
                             <span className="px-3 py-1 bg-white rounded-sm shadow-sm text-gray-900">
-                                Sign up
+                                إنشاء حساب
                             </span>
                         </div>
                     </div>
@@ -136,9 +136,9 @@ export default function SignupPage() {
                                 htmlFor="name"
                                 className="block text-sm font-medium text-gray-700 mb-2"
                             >
-                                Name{" "}
+                                الاسم{" "}
                                 <span className="text-gray-400 font-normal">
-                                    (optional)
+                                    (اختياري)
                                 </span>
                             </label>
                             <Input
@@ -146,7 +146,7 @@ export default function SignupPage() {
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                placeholder="Your name"
+                                placeholder="اسمك"
                                 className="w-full"
                             />
                         </div>
@@ -156,9 +156,9 @@ export default function SignupPage() {
                                 htmlFor="organisation"
                                 className="block text-sm font-medium text-gray-700 mb-2"
                             >
-                                Organisation{" "}
+                                الجهة{" "}
                                 <span className="text-gray-400 font-normal">
-                                    (optional)
+                                    (اختياري)
                                 </span>
                             </label>
                             <Input
@@ -168,7 +168,7 @@ export default function SignupPage() {
                                 onChange={(e) =>
                                     setOrganisation(e.target.value)
                                 }
-                                placeholder="Your organisation"
+                                placeholder="اسم الجهة"
                                 className="w-full"
                             />
                         </div>
@@ -178,14 +178,14 @@ export default function SignupPage() {
                                 htmlFor="email"
                                 className="block text-sm font-medium text-gray-700 mb-2"
                             >
-                                Email
+                                البريد الإلكتروني
                             </label>
                             <Input
                                 id="email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
+                                placeholder="أدخل بريدك الإلكتروني"
                                 required
                                 className="w-full"
                             />
@@ -196,14 +196,14 @@ export default function SignupPage() {
                                 htmlFor="password"
                                 className="block text-sm font-medium text-gray-700 mb-2"
                             >
-                                Password
+                                كلمة المرور
                             </label>
                             <Input
                                 id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Create a password (min. 6 characters)"
+                                placeholder="أنشئ كلمة مرور (6 أحرف على الأقل)"
                                 required
                                 className="w-full"
                             />
@@ -214,7 +214,7 @@ export default function SignupPage() {
                                 htmlFor="confirmPassword"
                                 className="block text-sm font-medium text-gray-700 mb-2"
                             >
-                                Confirm Password
+                                تأكيد كلمة المرور
                             </label>
                             <Input
                                 id="confirmPassword"
@@ -223,7 +223,7 @@ export default function SignupPage() {
                                 onChange={(e) =>
                                     setConfirmPassword(e.target.value)
                                 }
-                                placeholder="Confirm your password"
+                                placeholder="أعد إدخال كلمة المرور"
                                 required
                                 className="w-full"
                             />
@@ -240,37 +240,35 @@ export default function SignupPage() {
                             disabled={loading}
                             className="w-full bg-black hover:bg-gray-900 text-white"
                         >
-                            {loading ? "Creating account..." : "Sign up"}
+                            {loading ? "جار إنشاء الحساب..." : "إنشاء الحساب"}
                         </Button>
                     </form>
 
                     {/* Terms and Privacy */}
                     <div className="mt-4 text-center text-xs text-gray-500">
-                        By signing up, you agree to our{" "}
+                        بإنشاء الحساب فإنك توافق على{" "}
                         <Link
                             href="https://jblbizlaw.com/terms"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
                         >
-                            Terms of Use
+                            شروط الاستخدام
                         </Link>{" "}
-                        and{" "}
+                        و{" "}
                         <Link
                             href="https://jblbizlaw.com/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 hover:underline"
                         >
-                            Privacy Policy
+                            سياسة الخصوصية
                         </Link>
                     </div>
                 </div>
                 <p className="text-center text-xs text-gray-500 leading-relaxed px-2">
-                    JBL BIZ LAW hosted on jblbizlaw.com is currently a demo service.
-                    Please do not upload, submit, or store sensitive,
-                    confidential, privileged, client, or personally identifiable
-                    documents.
+                    جبل بيز لو على jblbizlaw.com خدمة تجريبية حالياً.
+                    يرجى عدم رفع أو تخزين مستندات حساسة أو سرية أو محمية بامتياز مهني أو تحتوي على بيانات شخصية.
                 </p>
             </div>
         </div>
