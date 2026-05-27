@@ -1,171 +1,91 @@
 #!/usr/bin/env node
 /**
- * JBL BIZ LAW — Database Setup Script
- * 
- * Creates a Neon Postgres database (free tier) and runs Drizzle migrations.
- * 
- * Prerequisites:
- *   1. Install Neon CLI:  npm i -g neonctl
- *   2. Authenticate:       neonctl auth
- * 
- * Usage:
- *   node scripts/setup-db.mjs
- * 
- * Or manually:
- *   1. Create project:  neonctl projects create --name jbl-biz-law --region aws-ap-southeast-1
- *   2. Get connection:  neonctl connection-string --project-id <id> --database neondb
- *   3. Set DATABASE_URL in .env.local
- *   4. Run migrations:  npx drizzle-kit push
+ * JBL BIZ LAW - Supabase database setup helper.
+ *
+ * This project uses the same Postgres schema shape as Mike, hosted in
+ * Supabase Postgres. Add your Supabase database connection string to
+ * .env.local as DATABASE_URL, then this script will push the Drizzle schema.
+ *
+ * Supabase path:
+ *   Project Settings > Database > Connection string
+ *
+ * For Vercel/serverless, prefer the transaction pooler URL:
+ *   postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?sslmode=require
  */
 
-import { execSync } from 'node:child_process';
-import { existsSync, writeFileSync, readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { execSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const FRONTEND_DIR = join(__dirname, '..');
-const ENV_FILE = join(FRONTEND_DIR, '.env.local');
+const FRONTEND_DIR = join(__dirname, "..");
+const ENV_FILE = join(FRONTEND_DIR, ".env.local");
 
 function run(cmd, opts = {}) {
   console.log(`\n> ${cmd}`);
-  return execSync(cmd, { stdio: 'inherit', cwd: FRONTEND_DIR, ...opts });
-}
-
-function checkNeonCLI() {
-  try {
-    execSync('neonctl --version', { stdio: 'pipe' });
-    return true;
-  } catch {
-    return false;
-  }
+  return execSync(cmd, { stdio: "inherit", cwd: FRONTEND_DIR, ...opts });
 }
 
 function loadEnv() {
   const env = { ...process.env };
   if (existsSync(ENV_FILE)) {
-    const content = readFileSync(ENV_FILE, 'utf8');
-    for (const line of content.split('\n')) {
+    const content = readFileSync(ENV_FILE, "utf8");
+    for (const line of content.split("\n")) {
       const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
-      const eqIdx = trimmed.indexOf('=');
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eqIdx = trimmed.indexOf("=");
       if (eqIdx === -1) continue;
       const key = trimmed.slice(0, eqIdx).trim();
-      const val = trimmed.slice(eqIdx + 1).trim();
+      const val = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, "");
       env[key] = val;
     }
   }
   return env;
 }
 
-async function main() {
-  console.log('╔══════════════════════════════════════════╗');
-  console.log('║   JBL BIZ LAW — Database Setup          ║');
-  console.log('╚══════════════════════════════════════════╝\n');
-
-  const env = loadEnv();
-  
-  // Step 1: Check if DATABASE_URL is already set
-  if (env.DATABASE_URL && env.DATABASE_URL.startsWith('postgresql://')) {
-    console.log('✅ DATABASE_URL found in .env.local');
-    console.log(`   ${env.DATABASE_URL.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`);
-
-    // Run migrations
-    console.log('\n📦 Running Drizzle migrations...');
-    run('npx drizzle-kit push', { env });
-    
-    console.log('\n✅ Database setup complete!');
-    console.log('\nNext steps:');
-    console.log('  1. Set AUTH_SECRET:  npx auth secret');
-    console.log('  2. Set R2 credentials in .env.local');
-    console.log('  3. Run:  npm run dev');
-    return;
-  }
-
-  // Step 2: Check for Neon CLI
-  if (!checkNeonCLI()) {
-    console.log('❌ Neon CLI not found. Install with: npm i -g neonctl');
-    console.log('   Then authenticate: neonctl auth');
-    console.log('\nAlternatively, create a Neon database manually:');
-    console.log('  1. Go to https://console.neon.tech');
-    console.log('  2. Create a project (free tier)');
-    console.log('  3. Copy the connection string');
-    console.log('  4. Add it to .env.local as DATABASE_URL');
-    console.log('  5. Re-run this script');
-    process.exit(1);
-  }
-
-  console.log('✅ Neon CLI found, creating project...');
-
-  // Step 3: Create Neon project
-  try {
-    console.log('\n📦 Creating Neon project "jbl-biz-law"...');
-    run('neonctl projects create --name jbl-biz-law --region ap-southeast-1 --psql');
-  } catch (e) {
-    console.log('Project may already exist, fetching connection string...');
-  }
-
-  // Step 4: Get connection string
-  const connString = execSync(
-    'neonctl connection-string --project-name jbl-biz-law --database neondb',
-    { encoding: 'utf8', stdio: 'pipe' }
-  ).trim();
-
-  if (!connString.startsWith('postgresql://')) {
-    console.error('❌ Failed to get connection string');
-    process.exit(1);
-  }
-
-  // Step 5: Write .env.local
-  console.log('\n📝 Writing .env.local...');
-  const envContent = `# JBL BIZ LAW — Environment Variables
-# Auto-generated by scripts/setup-db.mjs
-
-# Neon Postgres
-DATABASE_URL=${connString}
-
-# Generate with: npx auth secret
-AUTH_SECRET=replace-me-run-npx-auth-secret
-
-# Deployment URL
-AUTH_URL=http://localhost:3000
-
-# Cloudflare R2 (set these for file uploads)
-# R2_ACCOUNT_ID=
-# R2_ACCESS_KEY_ID=
-# R2_SECRET_ACCESS_KEY=
-# R2_BUCKET_NAME=jbl-biz-law
-# R2_ENDPOINT_URL=https://your-account-id.r2.cloudflarestorage.com
-`;
-  writeFileSync(ENV_FILE, envContent);
-
-  // Step 6: Run migrations
-  console.log('\n📦 Running Drizzle migrations...');
-  const migrationEnv = { ...process.env, DATABASE_URL: connString };
-  run('npx drizzle-kit push', { env: migrationEnv });
-
-  // Step 7: Generate AUTH_SECRET
-  console.log('\n🔑 Generating AUTH_SECRET...');
-  try {
-    const secret = execSync('npx auth secret --raw', { encoding: 'utf8', stdio: 'pipe' }).trim();
-    if (secret) {
-      const existing = readFileSync(ENV_FILE, 'utf8');
-      const updated = existing.replace('replace-me-run-npx-auth-secret', secret);
-      writeFileSync(ENV_FILE, updated);
-      console.log('✅ AUTH_SECRET generated and saved');
-    }
-  } catch {
-    console.log('⚠️  Could not auto-generate AUTH_SECRET. Run: npx auth secret');
-  }
-
-  console.log('\n✅ Database setup complete!');
-  console.log(`\nConnection: ${connString.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`);
-  console.log('\nNext steps:');
-  console.log('  1. Set your R2 credentials in .env.local');
-  console.log('  2. Run:  npm run dev');
+function maskUrl(url) {
+  return url.replace(/\/\/([^:]+):([^@]+)@/, "//***:***@");
 }
 
-main().catch(err => {
-  console.error('\n❌ Setup failed:', err.message);
+async function main() {
+  console.log("JBL BIZ LAW - Supabase database setup\n");
+
+  const env = loadEnv();
+  const databaseUrl = env.DATABASE_URL;
+
+  if (!databaseUrl || !databaseUrl.startsWith("postgresql://")) {
+    console.error("DATABASE_URL is missing from frontend/.env.local.");
+    console.error("");
+    console.error("Add your Supabase Postgres connection string, for example:");
+    console.error(
+      "DATABASE_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?sslmode=require",
+    );
+    console.error("");
+    console.error("Then run: npm run db:setup");
+    process.exit(1);
+  }
+
+  if (!databaseUrl.includes("supabase.com")) {
+    console.warn("Warning: DATABASE_URL does not look like a Supabase URL.");
+    console.warn("Continuing because any compatible Postgres URL can run the schema.");
+  }
+
+  console.log("DATABASE_URL found:");
+  console.log(`  ${maskUrl(databaseUrl)}`);
+
+  console.log("\nPushing Drizzle schema to Supabase Postgres...");
+  run("npx drizzle-kit push", { env: { ...process.env, ...env } });
+
+  console.log("\nDatabase setup complete.");
+  console.log("Next steps:");
+  console.log("  1. Set AUTH_SECRET: npx auth secret");
+  console.log("  2. Set SUPABASE_URL and SUPABASE_SECRET_KEY");
+  console.log("  3. Set R2 credentials for uploads");
+  console.log("  4. Run: npm run dev");
+}
+
+main().catch((err) => {
+  console.error("\nSetup failed:", err instanceof Error ? err.message : String(err));
   process.exit(1);
 });

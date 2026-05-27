@@ -1,16 +1,23 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import * as schema from './schema';
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _client: ReturnType<typeof postgres> | null = null;
 
 export function getDb() {
   if (!_db) {
     if (!process.env.DATABASE_URL) {
       throw new Error('DATABASE_URL environment variable is not set');
     }
-    const sql = neon(process.env.DATABASE_URL);
-    _db = drizzle(sql, { schema });
+    _client = postgres(process.env.DATABASE_URL, {
+      max: 5,
+      prepare: false,
+      ssl: process.env.DATABASE_URL.includes('sslmode=disable')
+        ? false
+        : 'require',
+    });
+    _db = drizzle(_client, { schema });
   }
   return _db;
 }

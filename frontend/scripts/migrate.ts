@@ -1,11 +1,11 @@
 import { readFileSync } from 'fs';
-import { neon } from '@neondatabase/serverless';
+import postgres from 'postgres';
 
 async function main() {
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) throw new Error('DATABASE_URL not set');
   
-  const sql = neon(dbUrl);
+  const sql = postgres(dbUrl, { prepare: false, ssl: dbUrl.includes('sslmode=disable') ? false : 'require' });
   const migration = readFileSync('./drizzle/0000_real_marrow.sql', 'utf-8');
   const statements = migration.split('--> statement-breakpoint').map(s => s.trim()).filter(Boolean);
   
@@ -15,7 +15,7 @@ async function main() {
     const stmt = statements[i];
     const preview = stmt.slice(0, 60).replace(/\n/g, ' ');
     try {
-      await sql`${sql.unsafe(stmt)}`;
+      await sql.unsafe(stmt);
       console.log(`  [${i+1}/${statements.length}] OK: ${preview}`);
     } catch (err: any) {
       if (err.message?.includes('already exists') || err.message?.includes('duplicate')) {
@@ -30,6 +30,7 @@ async function main() {
   console.log(`\nTables created (${tables.length}):`);
   for (const t of tables as any[]) console.log(`  - ${t.table_name}`);
   console.log('\nMigration complete!');
+  await sql.end();
 }
 
 main().catch(console.error);

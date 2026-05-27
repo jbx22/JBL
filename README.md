@@ -5,7 +5,7 @@ AI-powered legal document analysis, contract review, and business intelligence p
 ## Architecture
 
 - **Framework**: Next.js 16 (App Router, Turbopack)
-- **Database**: Neon Postgres (free tier) + Drizzle ORM
+- **Database**: Supabase Postgres + Drizzle ORM
 - **Auth**: Auth.js v5 (NextAuth) with credentials provider
 - **Storage**: Cloudflare R2 (S3-compatible)
 - **i18n**: next-intl with full Arabic/English bilingual support
@@ -22,7 +22,7 @@ AI-powered legal document analysis, contract review, and business intelligence p
 
 - Node.js 20 or newer
 - npm
-- A Neon Postgres database (free tier: https://neon.tech)
+- A Supabase project with Postgres enabled
 - A Cloudflare R2 bucket (or any S3-compatible bucket)
 - At least one AI provider API key: Anthropic, Google Gemini, or OpenAI
 - LibreOffice installed locally (optional, for DOC/DOCX to PDF conversion)
@@ -33,15 +33,18 @@ AI-powered legal document analysis, contract review, and business intelligence p
 cd frontend
 npm install
 cp .env.example .env.local
-# Edit .env.local with your DATABASE_URL, AUTH_SECRET, R2 credentials
+# Edit .env.local with your Supabase DATABASE_URL, AUTH_SECRET, R2 credentials
 npm run dev
 ```
 
 ## Database Setup
 
-1. Create a Neon Postgres database
-2. Copy the connection string to `DATABASE_URL` in `.env.local`
-3. Run migrations:
+1. Create or open a Supabase project
+2. In Supabase Project Settings > Database, copy a Postgres connection string
+3. Use the transaction pooler URL for serverless deployments where possible
+4. Copy the connection string to `DATABASE_URL` in `.env.local`
+5. Set `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`
+6. Run migrations:
 ```bash
 cd frontend
 npx drizzle-kit push
@@ -50,7 +53,9 @@ npx drizzle-kit push
 ## Environment Variables
 
 See `frontend/.env.example` for the full list:
-- `DATABASE_URL` — Neon Postgres connection string
+- `DATABASE_URL` — Supabase Postgres connection string
+- `SUPABASE_URL` / `SUPABASE_SECRET_KEY` — Supabase server-side API access
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` — Supabase browser client config
 - `AUTH_SECRET` — Auth.js secret (generate with `openssl rand -base64 32`)
 - `AUTH_URL` — Your app URL (e.g. `http://localhost:3000`)
 - `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` — Cloudflare R2 credentials

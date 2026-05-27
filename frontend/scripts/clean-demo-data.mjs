@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { neon } from "@neondatabase/serverless";
+import postgres from "postgres";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,7 +20,10 @@ if (!DATABASE_URL) {
   process.exit(1);
 }
 
-const sql = neon(DATABASE_URL);
+const sql = postgres(DATABASE_URL, {
+  prepare: false,
+  ssl: DATABASE_URL.includes("sslmode=disable") ? false : "require",
+});
 const demoEmails = [
   "demo@jblbizlaw.com",
   "admin@jblbizlaw.com",
@@ -39,3 +42,4 @@ if (demoUserIds.length) {
 }
 
 console.log(`Removed ${demoUserIds.length} demo users and their cascading demo data.`);
+await sql.end();

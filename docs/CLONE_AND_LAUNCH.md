@@ -86,6 +86,10 @@ If `.env.local.example` is missing, copy from the repo root `.env.example` and a
 Required values:
 
 - `DATABASE_URL`
+- `SUPABASE_URL`
+- `SUPABASE_SECRET_KEY`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`
 - `AUTH_SECRET`
 - `AUTH_URL`
 - `NEXT_PUBLIC_APP_URL`
@@ -102,7 +106,7 @@ Generate an auth secret:
 npx auth secret
 ```
 
-Push the Drizzle schema to Neon:
+Use the Supabase Postgres connection string for `DATABASE_URL`, preferably the transaction pooler URL for serverless deployments. Then push the Drizzle schema to Supabase:
 
 ```bash
 npm run db:push
@@ -130,7 +134,7 @@ Mike originally uses:
 JBL should use:
 
 - Auth.js / NextAuth for auth
-- Neon Postgres with Drizzle for database
+- Supabase Postgres with Drizzle for database
 - Next.js API routes under `frontend/src/app/api`
 - Cloudflare R2 for storage
 - next-intl for Arabic and English UI

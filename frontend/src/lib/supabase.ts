@@ -4,7 +4,7 @@
  * documentVersions, etc.).
  *
  * This avoids a full library port while letting existing LLM/orchestration
- * code work against the Neon + Drizzle stack.
+ * code work against the Supabase Postgres + Drizzle stack.
  */
 
 import { db } from "@/db";

@@ -8,9 +8,8 @@
  * Usage:  node scripts/seed.mjs
  */
 
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
-import { eq, and } from 'drizzle-orm';
+import crypto from 'node:crypto';
+import postgres from 'postgres';
 import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -34,7 +33,10 @@ if (!DATABASE_URL) {
   process.exit(1);
 }
 
-const sql = neon(DATABASE_URL);
+const sql = postgres(DATABASE_URL, {
+  prepare: false,
+  ssl: DATABASE_URL.includes('sslmode=disable') ? false : 'require',
+});
 
 // Inline the schema types we need for seeding
 // (avoids full import of schema.ts which needs ts-node/bundler)
@@ -181,7 +183,7 @@ async function main() {
   console.log('║   JBL BIZ LAW — Database Seeding        ║');
   console.log('╚══════════════════════════════════════════╝\n');
 
-  console.log(`📡 Connecting to Neon...`);
+  console.log(`Connecting to Supabase Postgres...`);
   
   // Seed system workflows via raw SQL (avoids schema import complexity)
   for (const wf of SYSTEM_WORKFLOWS) {
@@ -264,6 +266,7 @@ async function main() {
   console.log(`   ${DEMO_ACCOUNTS.length} demo accounts inserted or updated.`);
   console.log('\nNext steps:');
   console.log('  Run the dev server:  npm run dev');
+  await sql.end();
 }
 
 main().catch(err => {

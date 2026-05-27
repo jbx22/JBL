@@ -23,7 +23,7 @@ That raw folder is intentionally ignored by git. It is for recovery and audit on
 The archived sessions covered these finished or superseded JBL tasks:
 
 - Initial Mike-to-JBL transformation brief.
-- Neon Postgres and Drizzle migration work.
+- Supabase Postgres and Drizzle migration work.
 - Auth.js / NextAuth replacement work.
 - next-intl Arabic and English translation setup.
 - Cloudflare R2 storage migration work.
