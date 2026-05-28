@@ -156,7 +156,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                             className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
                         >
                             <SiteLogo size="sm" />
-                            <span className={`text-2xl font-light font-serif ${shouldAnimate ? "sidebar-fade-in" : ""}`}>JBL BIZ LAW</span>
+                            <span className={`text-2xl font-light font-serif ${shouldAnimate ? "sidebar-fade-in" : ""}`}>AGD LAW AI</span>
                         </Link>
                     </div>
                 )}
@@ -447,3 +447,4 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         </div>
     );
 }
+

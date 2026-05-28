@@ -123,7 +123,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                 <div className="flex items-center justify-between px-6 pt-5 pb-2">
                     <div className="flex items-center gap-1.5 text-xs text-gray-400">
                         <span>Workflows</span>
-                        <span>›</span>
+                        <span>â€º</span>
                         <span>Edit column</span>
                     </div>
                     <button
@@ -250,7 +250,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                                         onChange={(e) => update({ tagInput: e.target.value })}
                                         onKeyDown={handleTagKeyDown}
                                         onBlur={commitTag}
-                                        placeholder="Add tag…"
+                                        placeholder="Add tagâ€¦"
                                         className="min-w-[80px] flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 focus:outline-none"
                                     />
                                 </div>
@@ -279,7 +279,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                             rows={6}
                             value={draft.prompt}
                             onChange={(e) => update({ prompt: e.target.value })}
-                            placeholder="Write the analysis prompt — describe what JBL BIZ LAW should extract from each document for this column…"
+                            placeholder="Write the analysis prompt â€” describe what AGD LAW AI should extract from each document for this columnâ€¦"
                             className="mt-2 w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:border-gray-400 focus:outline-none bg-transparent resize-none leading-relaxed"
                         />
                     </div>
@@ -316,3 +316,4 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
         document.body,
     );
 }
+

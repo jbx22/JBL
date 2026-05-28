@@ -24,8 +24,8 @@ export function SiteLogo({
         <div className={`flex items-center gap-2 ${className}`}>
             <div className="relative flex-shrink-0 overflow-hidden rounded-md bg-white">
                 <img
-                    src="/jbl-logo.png"
-                    alt="JBL BIZ LAW"
+                    src="/agd-logo.svg"
+                    alt="AGD LAW AI"
                     width={markSize}
                     height={markSize}
                     className="block object-contain"
@@ -34,11 +34,11 @@ export function SiteLogo({
             </div>
             <div className={`flex flex-col ${animate ? "sidebar-fade-in" : ""}`}>
                 <h1 className={`font-bold tracking-tight leading-none ${titleSize}`}>
-                    <span className="text-[#1a1a2e]">JBL</span>
-                    <span className="text-[#c9a84c]"> BIZ LAW</span>
+                    <span className="text-[#1a1a2e]">AGD</span>
+                    <span className="text-[#c9a84c]"> LAW AI</span>
                 </h1>
                 <span className={`text-[#c9a84c] font-medium tracking-wider ${arabicSize}`}>
-                    جبل بيز لو
+                    الذكاء القانوني للعقود
                 </span>
             </div>
         </div>

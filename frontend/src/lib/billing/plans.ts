@@ -1,4 +1,4 @@
-export type BillingPlanId = "professional" | "business" | "enterprise";
+export type BillingPlanId = "explorer" | "business" | "founder_pro" | "enterprise";
 
 export type BillingPlan = {
     id: BillingPlanId;
@@ -11,31 +11,40 @@ export type BillingPlan = {
 };
 
 export const BILLING_PLANS: Record<BillingPlanId, BillingPlan> = {
-    professional: {
-        id: "professional",
-        tier: "Professional",
-        amountHalalas: 9900,
-        descriptionAr: "اشتراك JBL BIZ LAW للمحترفين - شهري",
-        descriptionEn: "JBL BIZ LAW Professional subscription - monthly",
-        monthlyAiRequests: 30,
+    explorer: {
+        id: "explorer",
+        tier: "Explorer",
+        amountHalalas: 0,
+        descriptionAr: "AGD LAW AI المستكشف - مجاني",
+        descriptionEn: "AGD LAW AI Explorer - Free",
+        monthlyAiRequests: 5,
         allowedModels: ["DeepSeek V4 Flash"],
     },
     business: {
         id: "business",
         tier: "Business",
-        amountHalalas: 29900,
-        descriptionAr: "اشتراك JBL BIZ LAW للشركات الصغيرة - شهري",
-        descriptionEn: "JBL BIZ LAW Small Companies subscription - monthly",
-        monthlyAiRequests: 75,
+        amountHalalas: 11000,
+        descriptionAr: "AGD LAW AI باقة الأعمال - شهري",
+        descriptionEn: "AGD LAW AI Business subscription - monthly",
+        monthlyAiRequests: 100,
+        allowedModels: ["DeepSeek V4 Flash"],
+    },
+    founder_pro: {
+        id: "founder_pro",
+        tier: "Founder Pro",
+        amountHalalas: 37000,
+        descriptionAr: "AGD LAW AI باقة المؤسس الاحترافية - شهري",
+        descriptionEn: "AGD LAW AI Founder Pro subscription - monthly",
+        monthlyAiRequests: 999999,
         allowedModels: ["DeepSeek V4 Flash"],
     },
     enterprise: {
         id: "enterprise",
         tier: "Enterprise",
-        amountHalalas: 50000,
-        descriptionAr: "اشتراك JBL BIZ LAW للحسابات المخصصة - شهري",
-        descriptionEn: "JBL BIZ LAW Customized Accounts subscription - monthly",
-        monthlyAiRequests: 300,
+        amountHalalas: 0,
+        descriptionAr: "AGD LAW AI المؤسسات - تسعير مخصص",
+        descriptionEn: "AGD LAW AI Enterprise - Custom pricing",
+        monthlyAiRequests: 999999,
         allowedModels: ["DeepSeek V4 Flash"],
     },
 };
@@ -54,21 +63,27 @@ export const TIER_POLICIES: Record<string, TierPolicy> = {
         deepseek: false,
         openai: false,
     },
-    Professional: {
-        tier: "Professional",
-        monthlyAiRequests: 30,
+    Explorer: {
+        tier: "Explorer",
+        monthlyAiRequests: 5,
         deepseek: true,
         openai: false,
     },
     Business: {
         tier: "Business",
-        monthlyAiRequests: 75,
+        monthlyAiRequests: 100,
+        deepseek: true,
+        openai: false,
+    },
+    "Founder Pro": {
+        tier: "Founder Pro",
+        monthlyAiRequests: 999999,
         deepseek: true,
         openai: false,
     },
     Enterprise: {
         tier: "Enterprise",
-        monthlyAiRequests: 300,
+        monthlyAiRequests: 999999,
         deepseek: true,
         openai: false,
     },
@@ -79,11 +94,18 @@ export function normalizeTier(tier: string | null | undefined): keyof typeof TIE
     return "Free";
 }
 
+export function normalizePlanId(planId: string | null | undefined): BillingPlanId {
+    if (planId === "professional") return "business";
+    if (planId && planId in BILLING_PLANS) return planId as BillingPlanId;
+    return "explorer";
+}
+
 export function getTierPolicy(tier: string | null | undefined): TierPolicy {
     return TIER_POLICIES[normalizeTier(tier)];
 }
 
 export function getBillingPlan(id: string | null | undefined): BillingPlan | null {
     if (!id) return null;
-    return BILLING_PLANS[id as BillingPlanId] ?? null;
+    return BILLING_PLANS[id as BillingPlanId] ?? BILLING_PLANS[normalizePlanId(id)] ?? null;
 }
+

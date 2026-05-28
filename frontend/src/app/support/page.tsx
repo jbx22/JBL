@@ -33,23 +33,23 @@ export default function SupportPage() {
     }[] = [
         {
             value: "bug",
-            label: "بلاغ عن مشكلة",
-            description: "أبلغنا عن شيء لا يعمل كما يجب",
+            label: "Ø¨Ù„Ø§Øº Ø¹Ù† Ù…Ø´ÙƒÙ„Ø©",
+            description: "Ø£Ø¨Ù„ØºÙ†Ø§ Ø¹Ù† Ø´ÙŠØ¡ Ù„Ø§ ÙŠØ¹Ù…Ù„ ÙƒÙ…Ø§ ÙŠØ¬Ø¨",
         },
         {
             value: "feature",
-            label: "اقتراح ميزة",
-            description: "اقترح ميزة جديدة أو تحسيناً",
+            label: "Ø§Ù‚ØªØ±Ø§Ø­ Ù…ÙŠØ²Ø©",
+            description: "Ø§Ù‚ØªØ±Ø­ Ù…ÙŠØ²Ø© Ø¬Ø¯ÙŠØ¯Ø© Ø£Ùˆ ØªØ­Ø³ÙŠÙ†Ø§Ù‹",
         },
         {
             value: "question",
-            label: "سؤال",
-            description: "اسأل عن استخدام جبل بيز لو",
+            label: "Ø³Ø¤Ø§Ù„",
+            description: "Ø§Ø³Ø£Ù„ Ø¹Ù† Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¬Ø¨Ù„ Ø¨ÙŠØ² Ù„Ùˆ",
         },
         {
             value: "other",
-            label: "أخرى",
-            description: "ملاحظات عامة أو استفسارات أخرى",
+            label: "Ø£Ø®Ø±Ù‰",
+            description: "Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø¹Ø§Ù…Ø© Ø£Ùˆ Ø§Ø³ØªÙØ³Ø§Ø±Ø§Øª Ø£Ø®Ø±Ù‰",
         },
     ];
 
@@ -78,7 +78,7 @@ export default function SupportPage() {
             setIsSubmitted(true);
         } catch (err) {
             console.error("Error submitting support request:", err);
-            setError("تعذر إرسال طلبك. يرجى المحاولة مرة أخرى.");
+            setError("ØªØ¹Ø°Ø± Ø¥Ø±Ø³Ø§Ù„ Ø·Ù„Ø¨Ùƒ. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.");
         } finally {
             setIsSubmitting(false);
         }
@@ -102,16 +102,16 @@ export default function SupportPage() {
                         </div>
                     </div>
                     <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                        شكراً لك، تم استلام طلبك.
+                        Ø´ÙƒØ±Ø§Ù‹ Ù„ÙƒØŒ ØªÙ… Ø§Ø³ØªÙ„Ø§Ù… Ø·Ù„Ø¨Ùƒ.
                     </h2>
                     <p className="text-gray-600 mb-6">
-                        سنتواصل معك قريباً عبر البريد الإلكتروني.
+                        Ø³Ù†ØªÙˆØ§ØµÙ„ Ù…Ø¹Ùƒ Ù‚Ø±ÙŠØ¨Ø§Ù‹ Ø¹Ø¨Ø± Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ.
                     </p>
                     <button
                         onClick={() => router.push("/")}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
                     >
-                        العودة للرئيسية
+                        Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ù„Ø±Ø¦ÙŠØ³ÙŠØ©
                     </button>
                 </div>
             </div>
@@ -125,7 +125,7 @@ export default function SupportPage() {
                 <div className="flex-shrink-0 pt-6 md:pt-10 pb-0">
                     <div className="mb-5">
                         <h1 className="text-4xl font-medium font-eb-garamond text-gray-900 mb-3">
-                            الدعم
+                            Ø§Ù„Ø¯Ø¹Ù…
                         </h1>
                     </div>
                 </div>
@@ -137,7 +137,7 @@ export default function SupportPage() {
                             {/* Feedback Type Selection */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                                    كيف يمكننا مساعدتك؟
+                                    ÙƒÙŠÙ ÙŠÙ…ÙƒÙ†Ù†Ø§ Ù…Ø³Ø§Ø¹Ø¯ØªÙƒØŸ
                                 </label>
                                 <div className="grid grid-cols-2 gap-3">
                                     {feedbackTypes.map((type) => (
@@ -177,7 +177,7 @@ export default function SupportPage() {
                                         htmlFor="link"
                                         className="block text-sm font-medium text-gray-700 mb-2"
                                     >
-                                        رابط المشكلة (اختياري)
+                                        Ø±Ø§Ø¨Ø· Ø§Ù„Ù…Ø´ÙƒÙ„Ø© (Ø§Ø®ØªÙŠØ§Ø±ÙŠ)
                                     </label>
                                     <input
                                         type="url"
@@ -186,11 +186,11 @@ export default function SupportPage() {
                                         onChange={(e) =>
                                             setLink(e.target.value)
                                         }
-                                        placeholder="https://jblbizlaw.com/..."
+                                        placeholder="https://agdlawai.com/..."
                                         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
-                                        إذا كانت المشكلة داخل محادثة، افتح خيارات المحادثة من الشريط الجانبي ثم اختر مشاركة والصق الرابط هنا.
+                                        Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ø§Ù„Ù…Ø´ÙƒÙ„Ø© Ø¯Ø§Ø®Ù„ Ù…Ø­Ø§Ø¯Ø«Ø©ØŒ Ø§ÙØªØ­ Ø®ÙŠØ§Ø±Ø§Øª Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø© Ù…Ù† Ø§Ù„Ø´Ø±ÙŠØ· Ø§Ù„Ø¬Ø§Ù†Ø¨ÙŠ Ø«Ù… Ø§Ø®ØªØ± Ù…Ø´Ø§Ø±ÙƒØ© ÙˆØ§Ù„ØµÙ‚ Ø§Ù„Ø±Ø§Ø¨Ø· Ù‡Ù†Ø§.
                                     </p>
                                 </div>
                             )}
@@ -201,7 +201,7 @@ export default function SupportPage() {
                                     htmlFor="subject"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    الموضوع
+                                    Ø§Ù„Ù…ÙˆØ¶ÙˆØ¹
                                 </label>
                                 <input
                                     type="text"
@@ -219,13 +219,13 @@ export default function SupportPage() {
                                     htmlFor="message"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    الرسالة
+                                    Ø§Ù„Ø±Ø³Ø§Ù„Ø©
                                 </label>
                                 <textarea
                                     id="message"
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
-                                    placeholder="اكتب سؤالك أو المشكلة أو الاقتراح بالتفصيل..."
+                                    placeholder="Ø§ÙƒØªØ¨ Ø³Ø¤Ø§Ù„Ùƒ Ø£Ùˆ Ø§Ù„Ù…Ø´ÙƒÙ„Ø© Ø£Ùˆ Ø§Ù„Ø§Ù‚ØªØ±Ø§Ø­ Ø¨Ø§Ù„ØªÙØµÙŠÙ„..."
                                     rows={5}
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
                                     required
@@ -235,7 +235,7 @@ export default function SupportPage() {
                             {/* Email Display (if logged in) */}
                             {user?.email && (
                                 <div className="text-sm text-gray-500">
-                                    سنرد على:{" "}
+                                    Ø³Ù†Ø±Ø¯ Ø¹Ù„Ù‰:{" "}
                                     <span className="font-medium">
                                         {user.email}
                                     </span>
@@ -262,12 +262,12 @@ export default function SupportPage() {
                                 {isSubmitting ? (
                                     <>
                                         <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        <span>جار الإرسال...</span>
+                                        <span>Ø¬Ø§Ø± Ø§Ù„Ø¥Ø±Ø³Ø§Ù„...</span>
                                     </>
                                 ) : (
                                     <>
                                         <Send className="h-4 w-4" />
-                                        <span>إرسال</span>
+                                        <span>Ø¥Ø±Ø³Ø§Ù„</span>
                                     </>
                                 )}
                             </button>
@@ -278,3 +278,4 @@ export default function SupportPage() {
         </div>
     );
 }
+

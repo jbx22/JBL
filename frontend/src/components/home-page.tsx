@@ -30,58 +30,58 @@ const content = {
         otherFlag: "🇺🇸",
         open: "تسجيل الدخول للمنصة",
         nav: ["الهوية", "كيف يعمل", "الرسالة والرؤية", "الأهداف", "الاشتراكات", "تواصل معنا"],
-        badge: "ذكاء قانوني عملي للمتحدثين بالعربية",
-        title: "JBL يساعد المتحدثين بالعربية على فهم القانون الأمريكي والأوروبي والعمل به بثقة.",
+        badge: "منصة ذكاء عقود عربية عابرة للحدود",
+        title: "الذكاء الاصطناعي العربي لقانون الأعمال الدولي",
         intro:
-            "منصة JBL BIZ LAW ترشد المستخدمين إلى إنشاء النماذج القانونية والعقود، تأسيس الشركات، فهم الالتزامات الضريبية، ومراجعة المستندات وفق سياق واضح للقانون الأمريكي والأوروبي.",
-        signup: "إنشاء حساب",
-        login: "تسجيل الدخول",
+            "بنية تحتية قانونية ذكية للعالم العربي — تمكّن رواد الأعمال والشركات والمحترفين من صياغة وتحليل وفهم العقود الخليجية والأمريكية والأوروبية بثقة ووضوح أكبر.",
+        signup: "ابدأ مجاناً",
+        login: "حلّل عقدك الآن",
         identityKicker: "هوية الموقع",
-        identityTitle: "منصة قانونية وتجارية تساعدك على تحويل السؤال القانوني إلى مستند أو خطوة عملية.",
+        identityTitle: "AGD LAW AI ليست مكتب محاماة أو روبوت دردشة عام؛ إنها ذكاء عقود عربية عابرة للحدود.",
         pillars: [
             [
-                "إرشاد للمتحدثين بالعربية",
-                "تشرح المنصة مفاهيم القانون الأمريكي والأوروبي بلغة واضحة وتساعد المستخدم العربي على معرفة ما يحتاجه قبل إعداد النماذج أو اتخاذ خطوة تجارية.",
+                "ذكاء العقود بالذكاء الاصطناعي",
+                "حلّل العقود والاتفاقيات الدولية واستخرج المخاطر والبنود المهمة بلغة عربية واضحة قبل التوقيع.",
             ],
             [
-                "نماذج وعقود وشركات",
-                "تساعد في إنشاء ومراجعة النماذج القانونية والعقود، مستندات تأسيس الشركات، سياسات الامتثال، ومسارات العمل المرتبطة بالأعمال.",
+                "مساحة عمل قانونية ذكية",
+                "نظّم المستندات والمشاريع ومسارات المراجعة داخل منصة واحدة مصممة للشركات ورواد الأعمال والمتخصصين.",
             ],
             [
-                "ضرائب ومخاطر وتزامات",
-                "تقدم إرشادا أوليا لفهم الضرائب، المخاطر، والالتزامات، مع التأكيد أن المخرجات تساعد المختص ولا تستبدل الاستشارة القانونية أو الضريبية البشرية.",
+                "مساعد قانوني بالذكاء الاصطناعي",
+                "اسأل عن عقودك الخليجية والأمريكية والأوروبية واحصل على تحليل وصياغة مدعومة بالذكاء الاصطناعي.",
             ],
         ],
         howItWorksTitle: "كيف يعمل",
         howItWorksIntro:
-            "واجهة عملية قريبة من Mike الأصلي، مع تجربة عربية موجهة لإدارة المستندات، المساعد، الجداول، ومسارات العمل.",
+            "مسارات عمل عملية لفهم وتحليل وإدارة العقود الدولية بشكل أسرع وأكثر ذكاءً.",
         howItWorksItems: [
-            ["المساعد", "اطرح أسئلة على مستنداتك وشغل مسارات عمل متعددة الخطوات مع مراجع واضحة."],
-            ["المشاريع", "نظم ملفات القضايا والشركات داخل مساحات عمل واضحة لكل مشروع."],
-            ["المراجعة الجدولية", "حوّل عشرات المستندات إلى جدول مراجعة قابل للتتبع والاقتباس."],
-            ["مسارات العمل", "احفظ خطوات المراجعة القانونية المتكررة وشغلها بنقرة واحدة."],
+            ["مساعد AGD AI", "اطرح أسئلة على مستنداتك وشغّل مسارات تحليل متعددة الخطوات مع مراجع واضحة."],
+            ["المشاريع", "نظّم ملفات الشركات والعقود الدولية داخل مساحات عمل واضحة لكل مشروع."],
+            ["تحليل العقود الجدولي", "حوّل مجموعة عقود إلى جدول مراجعة قابل للتتبع والمقارنة والاقتباس."],
+            ["أتمتة سير العمل القانوني", "احفظ خطوات تحليل العقود والصياغة المتكررة وشغّلها بنقرة واحدة."],
         ],
         missionTitle: "الرسالة",
         mission:
-            "رسالتنا أن نساعد المتحدثين بالعربية على الوصول إلى القانون الأمريكي والأوروبي بطريقة عملية ومفهومة، من خلال إرشادهم إلى إنشاء النماذج القانونية والعقود، تجهيز مستندات تأسيس الشركات، فهم المتطلبات الضريبية، ومراجعة الالتزامات والمخاطر بخطوات واضحة.",
+            "تمكين المتحدثين بالعربية من فهم وتحليل وإدارة العقود الدولية عبر بنية تحتية قانونية ذكية مدعومة بالذكاء الاصطناعي.",
         visionTitle: "الرؤية",
         vision:
-            "رؤيتنا أن تصبح JBL BIZ LAW الجسر القانوني الرقمي للمتحدثين بالعربية عند التعامل مع الولايات المتحدة وأوروبا، بحيث تساعد الأفراد ورواد الأعمال والشركات على الانتقال من الفكرة إلى مستند قانوني أو إجراء تجاري منظم بسرعة ودقة.",
+            "أن نصبح المنصة العربية الرائدة للذكاء الاصطناعي في قانون الأعمال الدولي وذكاء العقود العابرة للحدود.",
         goalsTitle: "الأهداف",
         goals: [
-            "مساعدة المستخدمين على إنشاء عقود ونماذج قانونية قابلة للمراجعة والتخصيص.",
-            "توجيه رواد الأعمال في خطوات تأسيس الشركات والامتثال التجاري في الولايات المتحدة وأوروبا.",
-            "تبسيط فهم الضرائب، الالتزامات، والمخاطر القانونية بلغة عربية واضحة.",
-            "توفير مساعد قانوني ذكي يعتمد على DeepSeek V4 Flash فقط داخل المنصة.",
+            "تبسيط العقود القانونية المعقدة للمتحدثين بالعربية.",
+            "تمكين الشركات من اتخاذ قرارات قانونية وتجارية أكثر ذكاءً.",
+            "ربط الأنظمة القانونية الخليجية والأمريكية والأوروبية بالعالم العربي.",
+            "مساعدة الشركات الناشئة والأعمال العابرة للحدود على تقليل المخاطر القانونية.",
         ],
         pricingTitle: "باقات الاشتراك",
         pricingIntro:
-            "استخدام الذكاء الاصطناعي متاح للعضويات المدفوعة فقط، ويعمل داخل JBL BIZ LAW عبر DeepSeek V4 Flash.",
+            "باقات مرنة لاستخدام AGD LAW AI في تحليل العقود، الصياغة الذكية، وأتمتة سير العمل القانوني.",
         choose: "اشترك الآن",
-        freeCta: "إنشاء حساب",
+        freeCta: "ابدأ مجاناً",
         contact: "تواصل معنا",
-        finalTitle: "ابدأ بسؤال قانوني أو مستند واحد، ثم حوّله إلى نموذج أو عقد أو خطة عمل واضحة.",
-        finalCta: "تسجيل الدخول للمنصة",
+        finalTitle: "افهم قبل أن توقّع. ارفع عقدك وابدأ بتحليل أوضح لعقود الأعمال الدولية.",
+        finalCta: "جرّب AGD AI",
     },
     en: {
         dir: "ltr",
@@ -90,161 +90,199 @@ const content = {
         otherFlag: "🇸🇦",
         open: "Log in to app",
         nav: ["Identity", "How it works", "Mission & vision", "Goals", "Pricing", "Contact"],
-        badge: "Practical legal AI for Arabic speakers",
-        title: "JBL helps Arabic speakers navigate U.S. and European law with confidence.",
+        badge: "Cross-border Arabic business contract intelligence",
+        title: "Arabic AI for International Business Law",
         intro:
-            "JBL BIZ LAW guides users through legal forms, contracts, company setup, tax-law questions, document review, and more under clear U.S. and European legal context.",
-        signup: "Create account",
-        login: "Log in",
+            "AI legal infrastructure built for the Arabic world — empowering founders, businesses, and professionals to draft, analyze, and understand US, EU, and GCC contracts with confidence.",
+        signup: "Start Free",
+        login: "Analyze a Contract",
         identityKicker: "Website identity",
-        identityTitle: "A legal and business platform that turns legal questions into practical documents and next steps.",
+        identityTitle: "AGD LAW AI is not a law firm, generic AI chat, or legal search engine. It is cross-border Arabic business contract intelligence.",
         pillars: [
             [
-                "Guidance for Arabic speakers",
-                "The platform explains U.S. and European legal concepts in clear language and helps Arabic-speaking users understand what they need before preparing forms or taking business action.",
+                "AI Contract Intelligence",
+                "Analyze international agreements, identify risks, and understand key terms before you sign.",
             ],
             [
-                "Forms, contracts, companies",
-                "JBL helps generate and review legal forms, contracts, company-formation documents, compliance policies, and business legal workflows.",
+                "AI Legal Workspace",
+                "Organize contracts, projects, reviews, and repeatable workflows in one workspace built for Arabic-speaking businesses.",
             ],
             [
-                "Tax, risk, and obligations",
-                "It provides first-pass guidance on taxes, risks, and obligations while making clear that outputs support professionals and do not replace human legal or tax advice.",
+                "AI Legal Assistant",
+                "Ask questions across GCC, US, and European agreements and get AI-powered contract analysis and drafting support.",
             ],
         ],
         howItWorksTitle: "How it works",
         howItWorksIntro:
-            "The product stays close to Mike's original workflow model, with an Arabic-first experience for documents, assistant work, tabular review, and reusable workflows.",
+            "A practical workflow for drafting, analyzing, and managing international contracts faster.",
         howItWorksItems: [
-            ["Assistant", "Ask questions across your documents and run multi-step legal workflows with clear citations."],
-            ["Projects", "Organize matter files and company work inside focused project workspaces."],
-            ["Tabular review", "Turn document sets into a cited review table built for comparison and export."],
-            ["Workflows", "Save repeatable legal review steps and run them in one click."],
+            ["AGD AI Assistant", "Ask questions across your documents and run multi-step contract workflows with clear citations."],
+            ["Projects", "Organize company, startup, and cross-border contract files inside focused workspaces."],
+            ["Contract review tables", "Turn document sets into cited review tables built for comparison and export."],
+            ["Legal workflow automation", "Save repeatable contract analysis and drafting steps and run them in one click."],
         ],
         missionTitle: "Mission",
         mission:
-            "Our mission is to help Arabic speakers access U.S. and European law in a practical, understandable way by guiding them through legal forms, contracts, company setup documents, tax requirements, obligations, and risk review with clear steps.",
+            "Empowering Arabic speakers to understand, analyze, and manage international business contracts through intelligent AI-powered legal infrastructure.",
         visionTitle: "Vision",
         vision:
-            "Our vision is for JBL BIZ LAW to become the digital legal bridge for Arabic speakers dealing with the United States and Europe, helping individuals, entrepreneurs, and companies move from an idea to a legal document or organized business action quickly and accurately.",
+            "To become the leading Arabic AI platform for international business law and cross-border contract intelligence.",
         goalsTitle: "Goals",
         goals: [
-            "Help users generate legal forms and contracts that can be reviewed and customized.",
-            "Guide entrepreneurs through company setup and business compliance in the United States and Europe.",
-            "Simplify tax, obligation, and legal-risk concepts in clear Arabic and English.",
-            "Provide an AI legal assistant powered only by DeepSeek V4 Flash inside the platform.",
+            "Simplify complex legal contracts for Arabic speakers.",
+            "Enable smarter international business decisions.",
+            "Bridge Arabic, GCC, US, and European legal workflows.",
+            "Help startups and businesses reduce legal risks.",
         ],
         pricingTitle: "Subscription tiers",
         pricingIntro:
-            "AI usage is available for paid memberships only, and JBL BIZ LAW runs on DeepSeek V4 Flash inside the platform.",
+            "Flexible access to AGD LAW AI for contract intelligence, AI-powered drafting, and legal workflow automation.",
         choose: "Subscribe now",
-        freeCta: "Create account",
+        freeCta: "Start Free",
         contact: "Contact us",
-        finalTitle: "Start with one legal question or document, then turn it into a form, contract, or clear action plan.",
-        finalCta: "Log in to app",
+        finalTitle: "Understand before you sign. Upload an agreement and start with clearer international contract intelligence.",
+        finalCta: "Try AGD AI",
     },
 } satisfies Record<Locale, Record<string, unknown>>;
 
 const plans = {
     ar: [
         {
-            id: "free",
-            name: "الأساسي",
+            id: "explorer",
+            name: "المستكشف",
             price: "مجاني",
-            cadence: "للتجربة",
-            body: "لإنشاء حساب وتجربة المنصة",
+            cadence: "",
+            body: "للمستقلين والطلاب والمستخدمين الجدد",
             features: [
-                "لا يشمل استخدام الذكاء الاصطناعي",
-                "الترقية مطلوبة لاستخدام DeepSeek V4 Flash",
-                "مناسب لاستكشاف المنصة",
+                "5 تحليلات عقود شهرياً",
+                "شروح مبسطة للعقود بالذكاء الاصطناعي",
+                "تلخيص عقود عربي ↔ إنجليزي",
+                "مراجعة أساسية لعقود NDA",
+                "رفع PDF و DOCX",
+                "تصدير بعلامة مائية",
             ],
         },
         {
-            id: "professional",
-            name: "المهني",
-            price: "99 ر.س",
-            cadence: "شهريا",
-            body: "للمحترفين",
+            id: "business",
+            name: "الأعمال",
+            price: "$29",
+            cadence: "شهرياً",
+            body: "للشركات الناشئة والمتاجر والوكالات والمستشارين",
             features: [
-                "DeepSeek V4 Flash فقط",
-                "30 طلب ذكاء اصطناعي شهريا",
-                "إنشاء ومراجعة عقود ونماذج ومستندات",
+                "100 تحليل عقد شهرياً",
+                "إنشاء العقود بالذكاء الاصطناعي",
+                "كشف المخاطر القانونية",
+                "دعم العقود العربية والإنجليزية",
+                "دعم العقود الأمريكية والأوروبية والخليجية",
+                "اقتراحات إعادة الصياغة",
+                "تصدير احترافي للعقود",
+                "دعم فني عبر البريد الإلكتروني",
+            ],
+        },
+        {
+            id: "founder_pro",
+            name: "المؤسس الاحترافية",
+            price: "$99",
+            cadence: "شهرياً",
+            body: "للمؤسسين والشركات الصغيرة والمتوسطة والشركات الدولية",
+            features: [
+                "تحليل غير محدود للعقود",
+                "ذكاء قانوني متقدم",
+                "شرح بند ببند للعقود",
+                "اقتراحات تفاوض ذكية",
+                "مقارنة بين عدة عقود",
+                "اقتراحات Redline ذكية",
+                "قوالب استثمار وشراكات",
+                "دعم فني أولوية",
             ],
             featured: true,
         },
         {
-            id: "business",
-            name: "الشركات الصغيرة",
-            price: "299 ر.س",
-            cadence: "شهريا",
-            body: "للشركات والفرق الصغيرة",
-            features: [
-                "DeepSeek V4 Flash فقط",
-                "75 طلب ذكاء اصطناعي شهريا",
-                "مسارات عمل للشركات والعقود والضرائب",
-            ],
-        },
-        {
             id: "enterprise",
-            name: "الحسابات المخصصة",
-            price: "500 ر.س",
-            cadence: "شهريا",
-            body: "للجهات ذات المتطلبات الخاصة",
+            name: "المؤسسات",
+            price: "مخصص",
+            cadence: "",
+            body: "لمكاتب المحاماة والشركات الكبرى والجهات الحكومية",
             features: [
-                "DeepSeek V4 Flash فقط",
-                "300 طلب ذكاء اصطناعي شهريا",
-                "حوكمة وتكاملات ودعم إعداد",
+                "استضافة خاصة",
+                "تشغيل داخلي Self-Hosted",
+                "مساحات عمل للفرق",
+                "API للمطورين",
+                "تدريب مخصص للذكاء الاصطناعي العربي",
+                "ربط قواعد المعرفة الداخلية",
+                "نظام دخول موحد SSO",
+                "أدوات أمان وامتثال",
+                "مدير حساب ودعم مخصص",
             ],
         },
     ],
     en: [
         {
-            id: "free",
-            name: "Basic",
+            id: "explorer",
+            name: "Explorer",
             price: "Free",
-            cadence: "trial",
-            body: "For account setup and trial",
+            cadence: "",
+            body: "For freelancers, students, and first-time users",
             features: [
-                "No AI model usage included",
-                "Upgrade required for DeepSeek V4 Flash",
-                "Useful for exploring the platform",
+                "5 contract analyses/month",
+                "Basic AI explanations",
+                "Arabic ↔ English contract summaries",
+                "Basic NDA review",
+                "Upload PDF/DOCX",
+                "Watermarked exports",
             ],
         },
         {
-            id: "professional",
-            name: "Professional",
-            price: "SAR 99",
-            cadence: "monthly",
-            body: "For lawyers and consultants",
+            id: "business",
+            name: "Business",
+            price: "$29",
+            cadence: "/month",
+            body: "For startups, consultants, ecommerce, and agencies",
             features: [
-                "DeepSeek V4 Flash only",
-                "30 AI requests per month",
-                "Generate and review contracts, forms, and documents",
+                "100 contract analyses/month",
+                "AI contract drafting",
+                "Risk detection",
+                "Arabic + English contracts",
+                "US/EU/GCC contract support",
+                "AI rewrite suggestions",
+                "Export clean documents",
+                "Email support",
+            ],
+        },
+        {
+            id: "founder_pro",
+            name: "Founder Pro",
+            price: "$99",
+            cadence: "/month",
+            body: "For founders, SMEs, and cross-border businesses",
+            features: [
+                "Unlimited analyses",
+                "Advanced legal intelligence",
+                "Clause-by-clause explanations",
+                "AI negotiation suggestions",
+                "Multi-document comparison",
+                "Smart redline recommendations",
+                "Investor/legal templates",
+                "Priority support",
             ],
             featured: true,
         },
         {
-            id: "business",
-            name: "Small Companies",
-            price: "SAR 299",
-            cadence: "monthly",
-            body: "For companies and small teams",
-            features: [
-                "DeepSeek V4 Flash only",
-                "75 AI requests per month",
-                "Workflows for companies, contracts, and tax questions",
-            ],
-        },
-        {
             id: "enterprise",
-            name: "Customized Accounts",
-            price: "SAR 500",
-            cadence: "monthly",
-            body: "For specialized requirements",
+            name: "Enterprise",
+            price: "Custom",
+            cadence: "",
+            body: "For law firms, enterprises, governments, and holding groups",
             features: [
-                "DeepSeek V4 Flash only",
-                "300 AI requests per month",
-                "Governance, integrations, setup support",
+                "Private deployment",
+                "Self-hosted options",
+                "Team workspaces",
+                "API access",
+                "Arabic legal fine-tuning",
+                "Internal knowledge integration",
+                "SSO",
+                "Compliance/security controls",
+                "Dedicated onboarding",
             ],
         },
     ],
@@ -289,7 +327,7 @@ function SubscribeButton({
     locale: Locale;
     label: string;
 }) {
-    if (plan.id === "free") {
+    if (plan.id === "explorer" || plan.id === "enterprise") {
         return (
             <Link
                 href={localizedAppPath(locale, "/signup")}
@@ -318,6 +356,7 @@ export function HomePage({ locale = "ar" }: { locale?: Locale }) {
     const t = content[locale];
     const Icon = locale === "ar" ? ArrowLeft : ArrowRight;
     const navTargets = ["#identity", "#how-it-works", "#mission", "#goals", "#pricing", localizedPath(locale, "/contact")];
+    const align = locale === "ar" ? "text-right" : "text-left";
 
     return (
         <main className="min-h-screen bg-[#f7f5ef] text-[#151827]" dir={t.dir as string}>
@@ -346,7 +385,7 @@ export function HomePage({ locale = "ar" }: { locale?: Locale }) {
 
             <section className="bg-[#fdfcf8]">
                 <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-[1.05fr_0.95fr] md:px-8 md:py-20">
-                    <div className="flex flex-col justify-center">
+                    <div className={`flex flex-col justify-center ${align}`}>
                         <p className="mb-5 inline-flex w-fit items-center gap-2 rounded-md border border-[#d6c68f] bg-[#fbf4db] px-3 py-1 text-sm font-semibold text-[#7b6220]">
                             <Sparkles size={16} aria-hidden="true" />
                             {t.badge as string}
@@ -378,11 +417,11 @@ export function HomePage({ locale = "ar" }: { locale?: Locale }) {
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-center rounded-md border border-[#ded6c3] bg-white p-8 shadow-sm">
+                    <div className="flex items-center justify-center rounded-md border border-[#ded6c3] bg-white p-0 shadow-sm">
                         <img
-                            src="/jbl-logo.png"
-                            alt="JBL BIZ LAW"
-                            className="h-auto max-h-[420px] w-full max-w-[520px] object-contain"
+                            src="/agd-hero-logo.png"
+                            alt="AGD LAW AI"
+                            className="h-auto max-h-[560px] w-full rounded-md object-contain"
                         />
                     </div>
                 </div>

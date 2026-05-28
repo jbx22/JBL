@@ -199,7 +199,7 @@ export async function queryTabularCell(
   const raw = await completeText({
     model,
     systemPrompt:
-      "You are an Arabic-first legal document analyst for JBL BIZ LAW. Return only valid JSON with keys summary, flag, and reasoning. Write summary and reasoning in Arabic unless quoting source text verbatim. Use flag values green, grey, yellow, or red.",
+      "You are an Arabic-first legal document analyst for AGD LAW AI. Return only valid JSON with keys summary, flag, and reasoning. Write summary and reasoning in Arabic unless quoting source text verbatim. Use flag values green, grey, yellow, or red.",
     user: `Document: ${filename}\n\n${documentText.slice(0, 120_000)}\n\nInstruction: ${column.prompt}${suffix} If not found, state "Not Found".`,
     maxTokens: 2048,
     apiKeys,
@@ -304,7 +304,7 @@ export async function buildTabularStore(review: ReviewRow): Promise<TabularCellS
 export function buildTabularMessages(messages: ChatMessage[], tabularStore: TabularCellStore, reviewTitle: string): unknown[] {
   const docList = tabularStore.documents.map((doc, index) => `- ROW:${index} "${doc.filename}"`).join("\n");
   const colList = tabularStore.columns.map((column, index) => `- COL:${index} "${column.name}"`).join("\n");
-  const systemContent = `You are JBL BIZ LAW, an Arabic-first AI legal assistant. Answer in Arabic by default. You are helping with the tabular review "${reviewTitle}".
+  const systemContent = `You are AGD LAW AI, an Arabic-first AI legal assistant. Answer in Arabic by default. You are helping with the tabular review "${reviewTitle}".
 
 Use read_table_cells before answering questions about extracted cells.
 
@@ -351,3 +351,4 @@ export async function generateTabularTitle(model: string, firstMessage: string, 
 }
 
 export { createServerSupabase, runLLMStream, streamChatWithTools, TABULAR_TOOLS };
+

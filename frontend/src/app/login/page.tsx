@@ -1,13 +1,45 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { SiteLogo } from "@/components/site-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { SiteLogo } from "@/components/site-logo";
+
+const copy = {
+    ar: {
+        title: "تسجيل الدخول",
+        active: "دخول",
+        alternate: "إنشاء حساب",
+        email: "البريد الإلكتروني",
+        emailPlaceholder: "أدخل بريدك الإلكتروني",
+        password: "كلمة المرور",
+        passwordPlaceholder: "أدخل كلمة المرور",
+        submit: "تسجيل الدخول",
+        loading: "جار تسجيل الدخول...",
+        invalid: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+        failed: "حدث خطأ أثناء تسجيل الدخول",
+        notice:
+            "AGD LAW AI خدمة تجريبية حالياً. يرجى عدم رفع أو تخزين مستندات حساسة أو سرية أو محمية بامتياز مهني أو تحتوي على بيانات شخصية.",
+    },
+    en: {
+        title: "Sign in",
+        active: "Sign in",
+        alternate: "Create account",
+        email: "Email",
+        emailPlaceholder: "Enter your email",
+        password: "Password",
+        passwordPlaceholder: "Enter your password",
+        submit: "Sign in",
+        loading: "Signing in...",
+        invalid: "Email or password is incorrect",
+        failed: "Something went wrong while signing in",
+        notice:
+            "AGD LAW AI is currently a demo service. Please do not upload or store sensitive, confidential, privileged, or personally identifiable documents.",
+    },
+} as const;
 
 export default function LoginPage() {
     const router = useRouter();
@@ -33,7 +65,9 @@ export default function LoginPage() {
             ? "en"
             : "ar";
     const dir = locale === "ar" ? "rtl" : "ltr";
-    const signupHref = locale === "ar" ? "/signup" : "/signup?lang=en";
+    const textAlign = locale === "ar" ? "text-right" : "text-left";
+    const signupHref = locale === "ar" ? "/signup" : "/en/signup";
+    const t = copy[locale];
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,97 +76,76 @@ export default function LoginPage() {
         try {
             const result = await signIn("credentials", { email, password, redirect: false });
             if (result?.error) {
-                setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+                setError(t.invalid);
             } else {
                 router.push(callbackUrl);
             }
         } catch {
-            setError("حدث خطأ أثناء تسجيل الدخول");
+            setError(t.failed);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-dvh bg-white flex items-start justify-center px-6 pt-32 md:pt-40 pb-10 relative" dir={dir}>
+        <div className="min-h-dvh bg-white flex items-start justify-center px-6 pt-32 md:pt-40 pb-10 relative" dir={dir} lang={locale}>
             <div className="absolute top-4 md:top-8 left-1/2 -translate-x-1/2">
                 <SiteLogo size="md" className="md:text-4xl" asLink />
             </div>
             <div className="w-full max-w-md">
-                {/* Login Form */}
                 <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-4">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className={`text-2xl font-serif ${locale === "ar" ? "text-right" : "text-left"}`}>
-                            تسجيل الدخول
-                        </h2>
+                    <div className="flex justify-between items-center gap-4 mb-6">
+                        <h2 className={`text-2xl font-serif ${textAlign}`}>{t.title}</h2>
                         <div className="bg-gray-100 p-1 rounded-md flex text-xs font-medium">
                             <span className="text-gray-600 px-3 py-1 bg-white rounded-sm shadow-sm">
-                                دخول
+                                {t.active}
                             </span>
-                            <Link
-                                href={signupHref}
-                                className="px-3 py-1 text-gray-500 hover:text-gray-900"
-                            >
-                                إنشاء حساب
+                            <Link href={signupHref} className="px-3 py-1 text-gray-500 hover:text-gray-900">
+                                {t.alternate}
                             </Link>
                         </div>
                     </div>
                     <form onSubmit={handleLogin} className="space-y-4">
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700 mb-2"
-                            >
-                                البريد الإلكتروني
+                        <div className={textAlign}>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                                {t.email}
                             </label>
                             <Input
                                 id="email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="أدخل بريدك الإلكتروني"
+                                placeholder={t.emailPlaceholder}
                                 required
                                 className="w-full"
+                                dir="ltr"
                             />
                         </div>
 
-                        <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-700 mb-2"
-                            >
-                                كلمة المرور
+                        <div className={textAlign}>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                                {t.password}
                             </label>
                             <Input
                                 id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="أدخل كلمة المرور"
+                                placeholder={t.passwordPlaceholder}
                                 required
                                 className="w-full"
+                                dir="ltr"
                             />
                         </div>
 
-                        {error && (
-                            <div className="text-red-600 text-sm bg-red-50 p-3 rounded">
-                                {error}
-                            </div>
-                        )}
+                        {error && <div className="text-red-600 text-sm bg-red-50 p-3 rounded">{error}</div>}
 
-                        <Button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full mt-5 bg-black hover:bg-gray-900 text-white"
-                        >
-                            {loading ? "جار تسجيل الدخول..." : "تسجيل الدخول"}
+                        <Button type="submit" disabled={loading} className="w-full mt-5 bg-black hover:bg-gray-900 text-white">
+                            {loading ? t.loading : t.submit}
                         </Button>
                     </form>
                 </div>
-                <p className="text-center text-xs text-gray-500 leading-relaxed px-2">
-                    جبل بيز لو على jblbizlaw.com خدمة تجريبية حالياً.
-                    يرجى عدم رفع أو تخزين مستندات حساسة أو سرية أو محمية بامتياز مهني أو تحتوي على بيانات شخصية.
-                </p>
+                <p className="text-center text-xs text-gray-500 leading-relaxed px-2">{t.notice}</p>
             </div>
         </div>
     );

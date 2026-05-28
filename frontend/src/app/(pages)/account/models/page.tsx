@@ -30,17 +30,17 @@ const API_KEY_FIELDS = [
     {
         provider: "claude",
         label: "Anthropic (Claude) API Key",
-        placeholder: "sk-ant-…",
+        placeholder: "sk-ant-â€¦",
     },
     {
         provider: "gemini",
         label: "Google (Gemini) API Key",
-        placeholder: "AI…",
+        placeholder: "AIâ€¦",
     },
     {
         provider: "openai",
         label: "OpenAI API Key",
-        placeholder: "sk-…",
+        placeholder: "sk-â€¦",
     },
 ] as const;
 
@@ -89,7 +89,7 @@ export default function ModelsAndApiKeysPage() {
                 <p className="text-sm text-gray-500 mb-4 max-w-xl">
                     You must provide your own API keys for the app to work or
                     add your API keys into the .env file if you are running your
-                    own instance of JBL BIZ LAW.
+                    own instance of AGD LAW AI.
                 </p>
                 <p className="text-xs text-gray-400 mb-4 max-w-xl">
                     Title generation automatically routes to the cheapest
@@ -345,3 +345,4 @@ function ApiKeyField({
         </div>
     );
 }
+

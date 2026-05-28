@@ -1,0 +1,118 @@
+COMPLETE THE SUPABASE MIGRATION FOR JBL BIZ LAW
+
+## Current State
+The project at D:\AI\openclaw\.openclaw\workspace\jbl-biz-law\frontend is still 100% Drizzle ORM. Every file uses Drizzle. The .env.local has Supabase creds but no code uses them. The admin page.tsx is missing. The other routes use drizzle-orm.
+
+Supabase credentials in .env.local:
+- SUPABASE_URL=https://olteoeawxbrgcqydyxjw.supabase.co
+- SUPABASE_SECRET_KEY=***REDACTED***
+- NEXT_PUBLIC_SUPABASE_URL=https://olteoeawxbrgcqydyxjw.supabase.co
+- NEXT_PUBLIC_SUPABASE_ANON_KEY=***REDACTED***
+
+## Step 1: Install Deps
+```bash
+cd D:\AI\openclaw\.openclaw\workspace\jbl-biz-law\frontend
+npm install @supabase/supabase-js
+```
+
+## Step 2: Change db/index.ts
+Replace the Drizzle+postgres setup with a real Supabase admin client.
+Export a `supabase` object that uses service_role key for admin operations.
+
+```typescript
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SECRET_KEY!;
+
+let _client: ReturnType<typeof createClient> | null = null;
+
+export function getSupabase() {
+  if (!_client) {
+    _client = createClient(supabaseUrl, supabaseKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+  }
+  return _client;
+}
+
+export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
+  get(_target, prop) {
+    const real = getSupabase();
+    const val = (real as any)[prop];
+    if (typeof val === 'function') return val.bind(real);
+    return val;
+  },
+});
+```
+
+## Step 3: Convert lib/supabase.ts
+Replace the entire Drizzle adapter with a real `createServerSupabase()` that returns a Supabase client.
+Keep the same export name so nothing breaks downstream.
+
+Use `getSupabase()` from the new db/index.ts internally.
+The factory should support:
+- .from(table).select().eq().in().order().limit().maybeSingle().single().not()
+- .from(table).insert().select()
+- .from(table).update().eq().select()
+- .from(table).delete().eq()
+- .rpc(name, params)
+
+## Step 4: Convert lib/auth.ts
+Replace Drizzle auth with Supabase Auth via the admin client.
+- Use supabase.auth.signInWithPassword() with email+password
+- Map the returned user to next-auth format { id, email, name }
+- Keep using NextAuth (credentials provider) but validate via Supabase Auth
+
+## Step 5: Convert lib/admin.ts
+Replace all Drizzle imports with supabase REST calls.
+- getAdminPrincipal(): select from user_profiles via supabase
+- requireAdmin/requireSuperAdmin: same
+- writeAdminLog: insert into admin_audit_logs
+- ensureProfile: upsert user_profiles
+- getUsersByIds: select from users table
+- Remove all drizzle-orm imports
+
+## Step 6: Convert app/api/admin/overview/route.ts
+Replace all Drizzle SQL with supabase REST or raw SQL via supabase.rpc().
+The route returns counts, financials, tiers, recent users, admins, audit logs, signups/revenue per day.
+For aggregates, use supabase.rpc() to call SQL functions, or do multiple queries.
+
+Create these Postgres functions via supabase.rpc if needed for aggregates.
+OR use multiple supabase .select() calls and compute in JS.
+
+## Step 7: Convert app/api/admin/accounts/route.ts
+Use supabase.auth.admin.createUser() instead of Drizzle for creating new admin users.
+Use supabase insert for profile creation.
+
+## Step 8: Convert app/api/auth/signup/route.ts
+Use supabase.auth.admin.createUser() instead of Drizzle.
+
+## Step 9: Convert app/api/auth-helpers.ts
+Replace Drizzle query with supabase select.
+
+## Step 10: Create admin page.tsx
+Create src/app/admin/page.tsx with:
+- Fetches from /api/admin/overview
+- Shows dashboard (stats cards, recent users)
+- Lists other admins (read-only for regular admin)
+- Shows latest audit log entries
+- Matching dark theme from super-admin page
+- Loading, error, access-denied states
+
+## Step 11: Convert lib/chatRoute.ts (if it has Drizzle)
+Replace all Drizzle queries with supabase REST.
+
+## Verification
+After all changes, run:
+```bash
+cd D:\AI\openclaw\.openclaw\workspace\jbl-biz-law\frontend
+npx tsc --noEmit
+npm run lint
+npm run build
+```
+
+Fix all errors. The build must finish with 0 errors.
+
+## Notification
+When finished, write a file at D:\AI\openclaw\.openclaw\workspace\jbl-biz-law\MIGRATION_DONE.txt containing a one-line summary of what was done and any remaining issues.

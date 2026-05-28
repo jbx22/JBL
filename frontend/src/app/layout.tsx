@@ -17,9 +17,9 @@ const ebGaramond = EB_Garamond({
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://jbl-dun.vercel.app"),
-    title: "جبل بيز لو | منصة ذكاء قانوني وتجاري",
+    title: "AGD LAW AI | Arabic AI for International Business Law",
     description:
-        "منصة عربية للذكاء القانوني والتجاري تساعد الفرق المهنية على تحليل العقود، تنظيم المستندات، وتسريع المراجعة مع حوكمة واضحة.",
+        "AI legal infrastructure built for the Arabic world, helping Arabic speakers navigate GCC, US, and European business contracts with confidence.",
     icons: {
         icon: [
             { url: "/icon.svg", type: "image/svg+xml" },
@@ -30,24 +30,24 @@ export const metadata: Metadata = {
     openGraph: {
         type: "website",
         url: "https://jbl-dun.vercel.app",
-        siteName: "جبل بيز لو",
-        title: "جبل بيز لو | منصة ذكاء قانوني وتجاري",
+        siteName: "AGD LAW AI",
+        title: "AGD LAW AI | Arabic AI for International Business Law",
         description:
-            "منصة عربية للذكاء القانوني والتجاري لتحليل العقود وتنظيم المستندات وتسريع المراجعة.",
+            "Cross-border Arabic business contract intelligence for GCC, US, and European agreements.",
         images: [
             {
                 url: "/link-image.jpg",
                 width: 1200,
                 height: 651,
-                alt: "JBL BIZ LAW",
+                alt: "AGD LAW AI",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "جبل بيز لو | منصة ذكاء قانوني وتجاري",
+        title: "AGD LAW AI | Arabic AI for International Business Law",
         description:
-            "منصة عربية للذكاء القانوني والتجاري لتحليل العقود وتنظيم المستندات وتسريع المراجعة.",
+            "Cross-border Arabic business contract intelligence for GCC, US, and European agreements.",
         images: ["/link-image.jpg"],
     },
 };
@@ -58,7 +58,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="ar" dir="rtl" suppressHydrationWarning>
+        <html lang="en" dir="ltr" suppressHydrationWarning>
             <head>
                 <meta name="theme-color" content="#1a1a2e" />
                 <meta
@@ -66,12 +66,29 @@ export default function RootLayout({
                     content="width=device-width, initial-scale=1, viewport-fit=cover"
                 />
                 <link rel="manifest" href="/manifest.json" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                <meta name="apple-mobile-web-app-title" content="AGD LAW AI" />
+                <meta name="mobile-web-app-capable" content="yes" />
+                <meta name="application-name" content="AGD LAW AI" />
             </head>
             <body
                 className={`${arabicSans.variable} ${ebGaramond.variable} font-sans antialiased`}
             >
                 <Providers>{children}</Providers>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+    });
+}
+`,
+                    }}
+                />
             </body>
         </html>
     );
 }
+

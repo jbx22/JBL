@@ -18,14 +18,14 @@ export async function POST(request: Request) {
 
   const resendKey = process.env.RESEND_API_KEY;
   const to = process.env.SUPPORT_TO_EMAIL || process.env.CONTACT_TO_EMAIL;
-  const from = process.env.CONTACT_FROM_EMAIL ?? "JBL BIZ LAW <onboarding@resend.dev>";
+  const from = process.env.CONTACT_FROM_EMAIL ?? "AGD LAW AI <onboarding@resend.dev>";
 
   if (resendKey && to) {
     const resend = new Resend(resendKey);
     await resend.emails.send({
       from,
       to,
-      subject: `JBL Support: ${payload.subject}`,
+      subject: `AGD Support: ${payload.subject}`,
       replyTo: payload.email ?? undefined,
       text: [
         `Type: ${payload.type}`,
@@ -40,3 +40,4 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true });
 }
+

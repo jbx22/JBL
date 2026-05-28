@@ -19,10 +19,10 @@
     "optional": "optional"
   },
   "brand": {
-    "name": "JBL BIZ LAW",
-    "arabicName": "جبل بيز لو",
-    "tagline": "AI-Powered Legal & Business Platform",
-    "taglineAr": "منصة قانونية وتجارية مدعومة بالذكاء الاصطناعي"
+    "name": "AGD LAW AI",
+    "arabicName": "AGD LAW AI",
+    "tagline": "Arabic AI for International Business Law",
+    "taglineAr": "الذكاء الاصطناعي العربي لقانون الأعمال الدولي"
   },
   "nav": {
     "assistant": "AI Assistant",
@@ -62,7 +62,7 @@
     "and": "and",
     "loginTitle": "Welcome Back",
     "signupTitle": "Get Started",
-    "demoWarning": "JBL BIZ LAW is currently a demo service. Please do not upload sensitive, confidential, privileged, client, or personally identifiable documents."
+    "demoWarning": "AGD LAW AI is currently a demo service. Please do not upload sensitive, confidential, privileged, client, or personally identifiable documents."
   },
   "chat": {
     "newChat": "New Chat",
@@ -198,9 +198,9 @@
     "tabularModel": "Tabular Analysis Model"
   },
   "language": {
-    "switchTo": "العربية",
+    "switchTo": "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©",
     "english": "English",
-    "arabic": "العربية",
+    "arabic": "Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©",
     "current": "Current Language"
   },
   "error": {

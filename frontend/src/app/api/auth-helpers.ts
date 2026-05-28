@@ -1,11 +1,11 @@
 /**
- * Next.js API route auth helpers — replaces backend/src/middleware/auth.ts.
- * Uses Auth.js / NextAuth v5 JWT verification instead of Supabase.
+ * Next.js API route auth helpers — Supabase-backed.
+ *
+ * Uses Auth.js / NextAuth v5 JWT verification and Supabase for profile checks.
  */
+
 import { auth } from "@/lib/auth";
-import { db } from "@/db";
-import { userProfiles } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { supabase } from "@/db";
 import { jsonHttpError } from "@/lib/http-error";
 
 export interface AuthUser {
@@ -22,13 +22,17 @@ export async function requireAuth(): Promise<AuthUser> {
   if (!session?.user?.id) {
     throw jsonHttpError("Unauthorized", 401);
   }
-  const [profile] = await db
-    .select({ account_status: userProfiles.account_status })
-    .from(userProfiles)
-    .where(eq(userProfiles.user_id, session.user.id as string))
-    .limit(1);
 
-  if (profile?.account_status === "suspended" || profile?.account_status === "deleted") {
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("account_status")
+    .eq("user_id", session.user.id as string)
+    .maybeSingle();
+
+  if (
+    profile?.account_status === "suspended" ||
+    profile?.account_status === "deleted"
+  ) {
     throw jsonHttpError("Account is not active", 403);
   }
 

@@ -1,46 +1,60 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db";
-import { users, userProfiles } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import crypto from "crypto";
-
-const DEFAULT_TABULAR_MODEL = "deepseek-v4-flash";
+import { supabase } from "@/db";
 
 export async function POST(req: NextRequest) {
   try {
     const { email, password, name, organisation } = await req.json();
-    
+
     if (!email || !password || password.length < 6) {
       return NextResponse.json({ detail: "Invalid input" }, { status: 400 });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    
-    const existing = await db.select().from(users).where(eq(users.email, normalizedEmail)).limit(1);
-    if (existing.length > 0) {
-      return NextResponse.json({ detail: "Email already registered" }, { status: 409 });
+
+    // Check if user already exists in Supabase Auth
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existing = existingUsers?.users?.find(
+      (u) => u.email?.toLowerCase() === normalizedEmail
+    );
+    if (existing) {
+      return NextResponse.json(
+        { detail: "Email already registered" },
+        { status: 409 }
+      );
     }
 
-    const salt = crypto.randomBytes(16).toString("hex");
-    const passwordHash = `scrypt:${crypto.scryptSync(password, salt, 64).toString("hex")}`;
-
-    const [newUser] = await db.insert(users).values({
+    // Create user in Supabase Auth
+    const { data, error } = await supabase.auth.admin.createUser({
       email: normalizedEmail,
-      password_hash: passwordHash,
-      password_salt: salt,
-      display_name: name?.trim() || null,
-    }).returning();
-
-    await db.insert(userProfiles).values({
-      user_id: newUser.id,
-      display_name: name?.trim() || null,
-      organisation: organisation?.trim() || null,
-      tabular_model: DEFAULT_TABULAR_MODEL,
+      password,
+      email_confirm: true,
+      user_metadata: {
+        display_name: name?.trim() || null,
+      },
     });
 
-    return NextResponse.json({ ok: true, userId: newUser.id });
+    if (error || !data.user) {
+      console.error("Supabase admin createUser error:", error);
+      return NextResponse.json(
+        { detail: error?.message || "Failed to create user" },
+        { status: 500 }
+      );
+    }
+
+    // Create user profile
+    await supabase.from("user_profiles").insert({
+      user_id: data.user.id,
+      display_name: name?.trim() || null,
+      organisation: organisation?.trim() || null,
+      tabular_model: "deepseek-v4-flash",
+    });
+
+    return NextResponse.json({ ok: true, userId: data.user.id });
   } catch (error) {
     console.error("Signup error:", error);
-    return NextResponse.json({ detail: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { detail: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

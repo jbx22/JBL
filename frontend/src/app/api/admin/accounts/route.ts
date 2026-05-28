@@ -1,38 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
-import { db } from "@/db";
-import { userProfiles, users } from "@/db/schema";
+import { supabase } from "@/db";
 import { adminIp, requireSuperAdmin, writeAdminLog } from "@/lib/admin";
 import { errorToResponse } from "@/lib/http-error";
-import { desc, eq, sql } from "drizzle-orm";
 
 const DEFAULT_TABULAR_MODEL = "deepseek-v4-flash";
 const ADMIN_ROLES = new Set(["admin", "super_admin"]);
 
-function hashPassword(password: string) {
-  const salt = crypto.randomBytes(16).toString("hex");
-  const passwordHash = crypto.createHash("sha256").update(password + salt).digest("hex");
-  return { salt, passwordHash };
-}
-
 export async function GET() {
   try {
     await requireSuperAdmin();
-    const rows = await db
-      .select({
-        id: users.id,
-        email: users.email,
-        displayName: users.display_name,
-        role: userProfiles.role,
-        accountStatus: userProfiles.account_status,
-        suspensionReason: userProfiles.suspension_reason,
-        createdAt: users.created_at,
-        updatedAt: userProfiles.updated_at,
-      })
-      .from(userProfiles)
-      .innerJoin(users, eq(users.id, userProfiles.user_id))
-      .where(sql`${userProfiles.role} in ('admin', 'super_admin')`)
-      .orderBy(desc(userProfiles.updated_at));
+    // Fetch all admin profiles
+    const { data: profiles } = await supabase
+      .from("user_profiles")
+      .select("user_id, role, account_status, suspension_reason, updated_at")
+      .in("role", ["admin", "super_admin"])
+      .order("updated_at", { ascending: false });
+
+    const userIds = (profiles ?? []).map((p) => p.user_id);
+    const { data: userData } = userIds.length
+      ? await supabase.from("users").select("id, email, display_name").in("id", userIds)
+      : { data: [] as any[] };
+
+    const usersById: Record<string, any> = {};
+    for (const u of userData ?? []) {
+      usersById[u.id] = u;
+    }
+
+    const rows = (profiles ?? []).map((p) => {
+      const u = usersById[p.user_id] ?? {};
+      return {
+        id: p.user_id,
+        email: u.email ?? "",
+        displayName: u.display_name ?? null,
+        role: p.role,
+        accountStatus: p.account_status,
+        suspensionReason: p.suspension_reason ?? null,
+        createdAt: u.created_at ?? "",
+        updatedAt: p.updated_at ?? "",
+      };
+    });
 
     return NextResponse.json(rows);
   } catch (err) {
@@ -59,27 +65,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ detail: "Role must be admin or super_admin" }, { status: 400 });
     }
     if (password.length < 10) {
-      return NextResponse.json({ detail: "Temporary password must be at least 10 characters" }, { status: 400 });
+      return NextResponse.json(
+        { detail: "Temporary password must be at least 10 characters" },
+        { status: 400 }
+      );
     }
 
-    const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
-    if (existing.length > 0) {
+    // Check if user already exists
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existing = existingUsers?.users?.find(
+      (u) => u.email?.toLowerCase() === email
+    );
+    if (existing) {
       return NextResponse.json({ detail: "Email already exists" }, { status: 409 });
     }
 
-    const { salt, passwordHash } = hashPassword(password);
-    const [created] = await db
-      .insert(users)
-      .values({
-        email,
-        display_name: displayName,
-        password_hash: passwordHash,
-        password_salt: salt,
-      })
-      .returning({ id: users.id, email: users.email });
+    // Create user in Supabase Auth
+    const { data, error } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { display_name: displayName },
+    });
 
-    await db.insert(userProfiles).values({
-      user_id: created.id,
+    if (error || !data.user) {
+      return NextResponse.json(
+        { detail: error?.message || "Failed to create user" },
+        { status: 500 }
+      );
+    }
+
+    // Create profile
+    await supabase.from("user_profiles").insert({
+      user_id: data.user.id,
       display_name: displayName,
       role,
       account_status: "active",
@@ -90,13 +108,16 @@ export async function POST(req: NextRequest) {
       actor,
       action: "admin_account.created",
       entityType: "user",
-      entityId: created.id,
-      targetUserId: created.id,
+      entityId: data.user.id,
+      targetUserId: data.user.id,
       metadata: { email, role },
       ipAddress: adminIp(req.headers),
     });
 
-    return NextResponse.json({ id: created.id, email: created.email, role }, { status: 201 });
+    return NextResponse.json(
+      { id: data.user.id, email, role },
+      { status: 201 }
+    );
   } catch (err) {
     const response = errorToResponse(err);
     if (response) return response;

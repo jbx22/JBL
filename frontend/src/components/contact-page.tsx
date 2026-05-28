@@ -16,7 +16,7 @@ const content = {
         switchFlag: "EN",
         title: "تواصل معنا",
         intro:
-            "املأ النموذج وسنراجع طلبك بخصوص العقود، النماذج القانونية، تأسيس الشركات، الضرائب، أو أي احتياج قانوني وتجاري مرتبط بالولايات المتحدة وأوروبا.",
+            "أرسل طلبك بخصوص تحليل عقد، صياغة اتفاقية، أتمتة سير عمل قانوني، أو استخدام AGD LAW AI للعقود الخليجية والأمريكية والأوروبية.",
         name: "الاسم الكامل",
         email: "البريد الإلكتروني",
         phone: "رقم الجوال",
@@ -24,7 +24,7 @@ const content = {
         topic: "موضوع الطلب",
         message: "تفاصيل الطلب",
         placeholder:
-            "اكتب ما تحتاجه: عقد، نموذج قانوني، تأسيس شركة، سؤال ضريبي، مراجعة مستند، أو خدمة أخرى...",
+            "اكتب ما تحتاجه: تحليل عقد، صياغة اتفاقية، مراجعة مخاطر، مساحة عمل قانونية ذكية، أو طلب مؤسسي...",
         submit: "إرسال الطلب",
         sending: "جار الإرسال...",
         successTitle: "تم استلام طلبك",
@@ -32,10 +32,10 @@ const content = {
         back: "العودة للرئيسية",
         error: "تعذر إرسال الطلب الآن. حاول مرة أخرى.",
         topics: [
-            "إنشاء نموذج قانوني",
-            "مراجعة عقد",
-            "تأسيس شركة",
-            "ضرائب والتزامات",
+            "تحليل عقد",
+            "صياغة اتفاقية",
+            "مراجعة مخاطر",
+            "أتمتة سير عمل قانوني",
             "استفسار مؤسسي",
             "أخرى",
         ],
@@ -48,7 +48,7 @@ const content = {
         switchFlag: "AR",
         title: "Contact us",
         intro:
-            "Fill out the form and we will review your request about contracts, legal forms, company setup, tax questions, or other U.S. and European legal-business needs.",
+            "Fill out the form and we will review your request about contract analysis, AI-powered drafting, legal workflow automation, or GCC, US, and European business agreements.",
         name: "Full name",
         email: "Email address",
         phone: "Phone number",
@@ -56,7 +56,7 @@ const content = {
         topic: "Request topic",
         message: "Request details",
         placeholder:
-            "Tell us what you need: contract, legal form, company setup, tax question, document review, or another service...",
+            "Tell us what you need: contract analysis, agreement drafting, risk review, AI legal workspace setup, or enterprise support...",
         submit: "Send request",
         sending: "Sending...",
         successTitle: "Request received",
@@ -64,10 +64,10 @@ const content = {
         back: "Back to home",
         error: "Could not send the request right now. Please try again.",
         topics: [
-            "Legal form generation",
-            "Contract review",
-            "Company setup",
-            "Tax and obligations",
+            "Agreement drafting",
+            "Contract analysis",
+            "Risk review",
+            "Legal workflow automation",
             "Enterprise inquiry",
             "Other",
         ],
@@ -134,7 +134,7 @@ export function ContactPage({ locale = "ar" }: { locale?: Locale }) {
 
             <section className="mx-auto grid max-w-6xl gap-8 px-5 py-12 md:grid-cols-[0.85fr_1.15fr] md:px-8 md:py-16">
                 <div>
-                    <p className="text-sm font-bold text-[#8d7330]">JBL BIZ LAW</p>
+                    <p className="text-sm font-bold text-[#8d7330]">AGD LAW AI</p>
                     <h1 className="mt-3 text-4xl font-extrabold text-[#151827] md:text-5xl">
                         {t.title as string}
                     </h1>

@@ -1,7 +1,12 @@
-import { db } from "@/db";
-import { adminAuditLogs, userProfiles, users } from "@/db/schema";
+/**
+ * Admin helpers — Supabase-backed.
+ *
+ * Replaces the old Drizzle admin utilities with real Supabase REST queries
+ * using the service_role client from @/db.
+ */
+
+import { supabase } from "@/db";
 import { auth } from "@/lib/auth";
-import { and, eq, inArray } from "drizzle-orm";
 import { jsonHttpError } from "@/lib/http-error";
 
 export type AdminRole = "user" | "admin" | "super_admin";
@@ -23,7 +28,9 @@ function parseEmails(value: string | undefined): string[] {
     .filter(Boolean);
 }
 
-export function envRoleForEmail(email: string | null | undefined): AdminRole | null {
+export function envRoleForEmail(
+  email: string | null | undefined
+): AdminRole | null {
   const normalized = (email ?? "").toLowerCase();
   if (!normalized) return null;
   if (parseEmails(process.env[SUPER_ADMIN_ENV]).includes(normalized)) {
@@ -35,26 +42,28 @@ export function envRoleForEmail(email: string | null | undefined): AdminRole | n
   return null;
 }
 
-export function isAdminRole(role: string | null | undefined): role is "admin" | "super_admin" {
+export function isAdminRole(
+  role: string | null | undefined
+): role is "admin" | "super_admin" {
   return role === "admin" || role === "super_admin";
 }
 
 export async function getAdminPrincipal(): Promise<AdminPrincipal | null> {
   const session = await auth();
-  const userId = session?.user?.id as string | undefined;
+  const userId = (session?.user?.id as string | undefined) ?? "";
   const email = ((session?.user?.email as string | undefined) ?? "").toLowerCase();
   if (!userId || !email) return null;
 
-  const [profile] = await db
-    .select({
-      role: userProfiles.role,
-      account_status: userProfiles.account_status,
-    })
-    .from(userProfiles)
-    .where(eq(userProfiles.user_id, userId))
-    .limit(1);
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("role, account_status")
+    .eq("user_id", userId)
+    .maybeSingle();
 
-  if (profile?.account_status === "suspended" || profile?.account_status === "deleted") {
+  if (
+    profile?.account_status === "suspended" ||
+    profile?.account_status === "deleted"
+  ) {
     return null;
   }
 
@@ -87,15 +96,19 @@ export async function requireSuperAdmin(): Promise<AdminPrincipal> {
   return principal;
 }
 
-export async function ensureProfile(userId: string, defaults?: Partial<typeof userProfiles.$inferInsert>) {
-  const [existing] = await db
-    .select({ user_id: userProfiles.user_id })
-    .from(userProfiles)
-    .where(eq(userProfiles.user_id, userId))
-    .limit(1);
+export async function ensureProfile(
+  userId: string,
+  defaults?: Record<string, unknown>
+) {
+  const { data: existing } = await supabase
+    .from("user_profiles")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
 
   if (existing) return;
-  await db.insert(userProfiles).values({
+
+  await supabase.from("user_profiles").insert({
     user_id: userId,
     tabular_model: "deepseek-v4-flash",
     ...defaults,
@@ -111,7 +124,7 @@ export async function writeAdminLog(input: {
   metadata?: Record<string, unknown>;
   ipAddress?: string | null;
 }) {
-  await db.insert(adminAuditLogs).values({
+  await supabase.from("admin_audit_logs").insert({
     actor_user_id: input.actor.userId,
     actor_email: input.actor.email,
     action: input.action,
@@ -125,23 +138,31 @@ export async function writeAdminLog(input: {
 
 export async function getUsersByIds(userIds: string[]) {
   if (userIds.length === 0) return [];
-  return db
-    .select({ id: users.id, email: users.email, display_name: users.display_name })
-    .from(users)
-    .where(inArray(users.id, userIds));
+  const { data } = await supabase
+    .from("users")
+    .select("id, email, display_name")
+    .in("id", userIds);
+  return data ?? [];
 }
 
 export function adminIp(headers: Headers): string | null {
-  return headers.get("x-forwarded-for")?.split(",")[0]?.trim() || headers.get("x-real-ip");
+  return (
+    headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    headers.get("x-real-ip")
+  );
 }
 
-export function canChangeAdmin(actor: AdminPrincipal, target: { user_id: string; role: string }) {
+export function canChangeAdmin(
+  actor: AdminPrincipal,
+  target: { user_id: string; role: string }
+) {
   if (actor.role !== "super_admin") return false;
-  if (actor.userId === target.user_id && target.role === "super_admin") return false;
+  if (actor.userId === target.user_id && target.role === "super_admin")
+    return false;
   return true;
 }
 
-export const activeAdminWhere = and(
-  inArray(userProfiles.role, ["admin", "super_admin"]),
-  eq(userProfiles.account_status, "active"),
-);
+export const activeAdminWhere = {
+  role: ["admin", "super_admin"],
+  account_status: "active",
+};
